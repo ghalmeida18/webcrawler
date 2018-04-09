@@ -77,7 +77,7 @@ def CapturaTabelaDeEmpenhos(driver):
 
 		NavegaTabelas(driver, Quant_pagina, Num_Paginas)
 		for x in range(10):
-			path_empenho = '//table[@id="datatable"]/tbody/tr[' + str(x + 1) + ']/td[1]/a'
+			path_empenho = '//table[@id="datatable"]/tbody/tr[' + str(x + 1)+ ']/td[1]/a'
 			try:
 				tempo()
 				empenho = driver.find_element_by_xpath(path_empenho)
@@ -172,13 +172,14 @@ def CapturaTabelaDeEmpenhos(driver):
 				try:
 					Anulacoes.append(emp)#empenho ainda nao encontrado para anular
 					print("Anulaçao temporariamente salva")
+					
 				except:
 					print("Anulação apagada!")
 					BuscaMaisEmpenhos(driver, Quant_pagina, Num_Paginas)
 					continue
 
 
-			if (emp.Especie == "Complementar"):  
+			if (emp.Especie == "Complementar"): 
 				for temp in Empenhos:
 					if (emp.Numero == temp.Numero): #existe um empenho a ser atualizado na lista. debitar valor complementado.
 						temp.Valor = emp.Valor + temp.Valor
@@ -190,8 +191,13 @@ def CapturaTabelaDeEmpenhos(driver):
 					print("Complemento apagado!")
 					BuscaMaisEmpenhos(driver, Quant_pagina, Num_Paginas)
 					continue
+
+			
+
+			verificador = Anulacoes.__len__()
 		
-			if ((emp.Especie == "Ordinario" or emp.Especie == "Estimativo" or emp.Especie == "Global") & Anulacoes.__len__() != 0): #Encontrado Ordinario para anular
+			if ((emp.Especie == "Ordinario" or emp.Especie == "Estimativo" or emp.Especie == "Global") & (verificador>0)): #Encontrado Ordinario para anular
+				print("Validando Anulaçoes...")
 				for temp in Anulacoes:
 					emp.Valor = emp.Valor + temp.Valor
 				if(emp.Valor != 0.00):
@@ -199,7 +205,11 @@ def CapturaTabelaDeEmpenhos(driver):
 
 				Anulacoes = []
 
-			if ((emp.Especie == "Ordinario" or emp.Especie == "Estimativo" or emp.Especie == "Global") & Complementos.__len__() != 0): #Encontrado Ordinario para complementar
+
+
+			verificador = Complementos.__len__()
+			if ((emp.Especie == "Ordinario" or emp.Especie == "Estimativo" or emp.Especie == "Global") & (verificador>0)): #Encontrado Ordinario para complementar
+				print("Validando COmplementos...")
 				for temp in Complementos:
 					emp.Valor = emp.Valor + temp.Valor
 				if(emp.Valor != 0.00):
