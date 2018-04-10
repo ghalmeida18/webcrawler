@@ -93,8 +93,8 @@ def ComparaDados(emp1,emp2):
 class InserirBD (object):
     def InserirDados(self,Empenhos):
         con = pymysql.connect(host = '127.0.0.1',
-                      	      user = 'root',
-                              passwd='Gus32361168',
+                      	      user = '****',
+                              passwd='*******',
                               db = 'Prefeitura',
                               cursorclass=pymysql.cursors.DictCursor
                               )
@@ -183,8 +183,8 @@ class InserirBD (object):
 class AtualizarBD(object):
     def InserirDados(self, Empenhos):
         con = pymysql.connect(host='127.0.0.1',
-                              user='root',
-                              passwd='Gus32361168',
+                              user='***',
+                              passwd='******',
                               db='Prefeitura',
                               cursorclass=pymysql.cursors.DictCursor
                               )

@@ -1,3 +1,4 @@
+__author__ = "Gustavo Almeida"
 from selenium import webdriver
 import time
 import dados
