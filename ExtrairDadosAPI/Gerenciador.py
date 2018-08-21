@@ -47,10 +47,11 @@ def recuperaEmpenhoInsereBanco(idCliente):
 	
 	listaEmpenhos = []
 	r = requests.get(link)
-
+	cont = 0
 	if r.status_code == 200:
 		reddit_data = json.loads(r.content)
 		for reddit in reddit_data:
+			cont = cont + 1
 			try:
 				
 				empenho = Empenho.Empenho()
@@ -97,7 +98,22 @@ def recuperaEmpenhoInsereBanco(idCliente):
 				idFavorecido = str(IdRetornado['IdFavorecido'])
 
 				sqlquery = "INSERT INTO Empenho(Especie,Orgao,Projeto,Elemento,Licitacao,Processo,DataEmpenho,Valor,Empenho_Numero,IdFavorecido,Funcao,SubFuncao,Programa,Destinacao) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
-				
+				print("+++++++++"+ str(cont))
+				print(	empenho.especie+" , "+
+				empenho.orgao+" , "+
+				empenho.projeto+" , "+
+				empenho.elemento+" , "+
+				empenho.licitacao+" , "+
+				empenho.processo+" , "+
+				data+" , "+
+				empenho.valor+" , "+
+				empenho.numero+" , "+
+				idFavorecido+" , "+
+				empenho.funcao+" , "+
+				empenho.subFuncao+" , "+
+				empenho.programa+" , "+
+				empenho.destinacao)
+
 				cursor.execute(sqlquery,(
 					empenho.especie,
 					empenho.orgao,
@@ -115,19 +131,22 @@ def recuperaEmpenhoInsereBanco(idCliente):
 					empenho.destinacao
 					))
 				con.commit()
-				print("bb")
-
-				  
-
-
-
-
-				#sql = "INSERT INTO Cliente(nome,idcliente) values ('"+reddit['DescCliente']+"',"+reddit['IdCliente']+")"
-				#cursor = con.cursor()
-				#cursor.execute(sql)
-				#con.commit()
-				#print(reddit['DescCliente']+" "+reddit['IdCliente'])
 				
 			except :
-				print("Erro ao inserir empenho")
+				print("====================================================================================== "+str(cont)+"AAAA")
+				print(	empenho.especie+" , "+
+					empenho.orgao+" , "+
+					empenho.projeto+" , "+
+					empenho.elemento+" , "+
+					empenho.licitacao+" , "+
+					empenho.processo+" , "+
+					data+" , "+
+					empenho.valor+" , "+
+					empenho.numero+" , "+
+					idFavorecido+" , "+
+					empenho.funcao+" , "+
+					empenho.subFuncao+" , "+
+					empenho.programa+" , "+
+					empenho.destinacao)
+				print("======================================================================================")
 	con.close()
