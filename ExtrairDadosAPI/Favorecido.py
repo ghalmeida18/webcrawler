@@ -5,11 +5,11 @@ class Favorecido(object):
         self.CPF_CNPJ = str(CPF_CNPJ)
         self.Cargo = str(Cargo)
 
-    def RetornaNome(self):
+    def retornaNome(self):
         return str(self.Nome)
 
-    def RetornaCPF_CNPJ(self):
+    def retornaCPF_CNPJ(self):
         return str(self.CPF_CNPJ)
 
-    def RetornaCargo(self):
+    def retornaCargo(self):
         return str(self.Cargo)
