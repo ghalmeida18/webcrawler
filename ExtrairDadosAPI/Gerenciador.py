@@ -42,7 +42,7 @@ def recuperaClientesInsereBanco(link):
 
 def recuperaEmpenhoInsereBanco(idCliente):
 
-	link = "http://transparencia.portalfacil.com.br/api/empenhos?type=json&idCliente="+str(idCliente)+"&page=1&pageSize=100&dtInicio=01/01/2018&dtFim=31/12/2018"
+	link = "http://transparencia.portalfacil.com.br/api/empenhos?type=json&idCliente="+str(idCliente)+"&page=2&pageSize=100&dtInicio=01/01/2018&dtFim=31/12/2018"
 	con = conectaBanco()
 	
 	listaEmpenhos = []
@@ -98,21 +98,8 @@ def recuperaEmpenhoInsereBanco(idCliente):
 				idFavorecido = str(IdRetornado['IdFavorecido'])
 
 				sqlquery = "INSERT INTO Empenho(Especie,Orgao,Projeto,Elemento,Licitacao,Processo,DataEmpenho,Valor,Empenho_Numero,IdFavorecido,Funcao,SubFuncao,Programa,Destinacao) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
-				print("+++++++++"+ str(cont))
-				print(	empenho.especie+" , "+
-				empenho.orgao+" , "+
-				empenho.projeto+" , "+
-				empenho.elemento+" , "+
-				empenho.licitacao+" , "+
-				empenho.processo+" , "+
-				data+" , "+
-				empenho.valor+" , "+
-				empenho.numero+" , "+
-				idFavorecido+" , "+
-				empenho.funcao+" , "+
-				empenho.subFuncao+" , "+
-				empenho.programa+" , "+
-				empenho.destinacao)
+				#print("+++++++++"+ str(cont))
+				print(empenho.numero+" "+ empenho.especie)
 
 				cursor.execute(sqlquery,(
 					empenho.especie,
@@ -133,20 +120,5 @@ def recuperaEmpenhoInsereBanco(idCliente):
 				con.commit()
 				
 			except :
-				print("====================================================================================== "+str(cont)+"AAAA")
-				print(	empenho.especie+" , "+
-					empenho.orgao+" , "+
-					empenho.projeto+" , "+
-					empenho.elemento+" , "+
-					empenho.licitacao+" , "+
-					empenho.processo+" , "+
-					data+" , "+
-					empenho.valor+" , "+
-					empenho.numero+" , "+
-					idFavorecido+" , "+
-					empenho.funcao+" , "+
-					empenho.subFuncao+" , "+
-					empenho.programa+" , "+
-					empenho.destinacao)
-				print("======================================================================================")
+				print("Erro empenho")
 	con.close()
