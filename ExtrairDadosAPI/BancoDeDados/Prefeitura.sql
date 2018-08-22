@@ -47,6 +47,7 @@ DROP TABLE IF EXISTS `Empenho`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Empenho` (
+  `Empenho_Numero` int(11) NOT NULL,
   `Especie` varchar(25) NOT NULL,
   `Orgao` varchar(100) NOT NULL,
   `Projeto` varchar(100) NOT NULL,
@@ -54,18 +55,19 @@ CREATE TABLE `Empenho` (
   `Licitacao` varchar(50) NOT NULL,
   `Processo` varchar(30) NOT NULL,
   `DataEmpenho` date NOT NULL,
-  `Valor` float NOT NULL,
-  `Empenho_Numero` int(11) NOT NULL,
-  `IdFavorecido` int(11) DEFAULT NULL,
+  `Valor` decimal(12,2) DEFAULT NULL,
+  `IdFavorecido` int(11) NOT NULL,
   `Funcao` varchar(100) NOT NULL,
   `SubFuncao` varchar(100) NOT NULL,
   `Programa` varchar(100) NOT NULL,
   `Destinacao` varchar(45) NOT NULL,
-  `idCliente` int(11) DEFAULT NULL,
-  PRIMARY KEY (`Empenho_Numero`),
+  `idCliente` int(11) NOT NULL,
+  PRIMARY KEY (`Empenho_Numero`,`IdFavorecido`,`idCliente`),
   KEY `fk_Empenho_Favorecido1_idx` (`IdFavorecido`),
+  KEY `fk_Empenho_Cliente1_idx` (`idCliente`),
+  CONSTRAINT `fk_Empenho_Cliente1` FOREIGN KEY (`idCliente`) REFERENCES `Cliente` (`idCliente`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_Empenho_Favorecido1` FOREIGN KEY (`IdFavorecido`) REFERENCES `Favorecido` (`IdFavorecido`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -74,7 +76,6 @@ CREATE TABLE `Empenho` (
 
 LOCK TABLES `Empenho` WRITE;
 /*!40000 ALTER TABLE `Empenho` DISABLE KEYS */;
-INSERT INTO `Empenho` VALUES ('Estimativo','0209 - Fundo Municipal De Saude','2.104 - Manutencao De Convenio Com O Cispara','3.1.71.70.00 - Rateio Pela Participacao Em Consorcio Publico','0 - -','','2017-08-14',24462.4,7523,1,' 10 - Saude',' 302 - Assistencia Hospitalar E Ambulatorial',' 0022 - Atencao A Saude Da Comunidade',' 102 - Saude - 15%',NULL),('Global','0209 - Fundo Municipal De Saude','2.198 - Manutencao Cons. Urg/Emerg. Regiao Oeste Minas','3.1.71.70.00 - Rateio Pela Participacao Em Consorcio Publico','417 - 2017 - Processo De Dispensa',' PRC0066017','2017-09-14',136600,8676,2,' 10 - Saude',' 302 - Assistencia Hospitalar E Ambulatorial',' 0022 - Atencao A Saude Da Comunidade',' 102 - Saude - 15%',NULL),('Global','0209 - Fundo Municipal De Saude','2.359 - Manutencao Do Consorcio Com I.Cismep','3.1.71.70.00 - Rateio Pela Participacao Em Consorcio Publico','1417 - 2017 - Processo De Dispensa',' PRC0123417','2017-10-17',46093.8,9594,3,' 10 - Saude',' 302 - Assistencia Hospitalar E Ambulatorial',' 0022 - Atencao A Saude Da Comunidade',' 102 - Saude - 15%',NULL);
 /*!40000 ALTER TABLE `Empenho` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -87,13 +88,13 @@ DROP TABLE IF EXISTS `Favorecido`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Favorecido` (
   `IdFavorecido` int(11) NOT NULL AUTO_INCREMENT,
-  `CPF_CNPJ` varchar(100) NOT NULL,
+  `CPF_CNPJ` varchar(20) NOT NULL,
   `Nome` varchar(100) NOT NULL,
-  `Cargo` varchar(100) DEFAULT NULL,
+  `Cargo` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`IdFavorecido`),
   UNIQUE KEY `Nome_UNIQUE` (`Nome`),
   UNIQUE KEY `IdFavorecido_UNIQUE` (`IdFavorecido`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -102,7 +103,6 @@ CREATE TABLE `Favorecido` (
 
 LOCK TABLES `Favorecido` WRITE;
 /*!40000 ALTER TABLE `Favorecido` DISABLE KEYS */;
-INSERT INTO `Favorecido` VALUES (1,'01.260.691/0001-25','Cispara Cons.Int.Saude Alto Rio Para',''),(2,'20.059.618/0001-34','Consorcio Int. De Saude Da R.A.O. - Cis-Urg Oeste',''),(3,'05.802.877/0001-10','Instituicao Cooperacao Intermunic.Meio Paraopeba','');
 /*!40000 ALTER TABLE `Favorecido` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -116,12 +116,12 @@ DROP TABLE IF EXISTS `Pagamento`;
 CREATE TABLE `Pagamento` (
   `Numero` int(11) NOT NULL,
   `DataPagamento` date NOT NULL,
-  `ValorPagamento` float NOT NULL,
+  `ValorPagamento` decimal(12,2) DEFAULT NULL,
   `Empenho_Numero` int(11) NOT NULL,
   PRIMARY KEY (`Numero`,`Empenho_Numero`),
   KEY `fk_Pagamento_Empenho1_idx` (`Empenho_Numero`),
   CONSTRAINT `fk_Pagamento_Empenho1` FOREIGN KEY (`Empenho_Numero`) REFERENCES `Empenho` (`Empenho_Numero`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -130,7 +130,6 @@ CREATE TABLE `Pagamento` (
 
 LOCK TABLES `Pagamento` WRITE;
 /*!40000 ALTER TABLE `Pagamento` DISABLE KEYS */;
-INSERT INTO `Pagamento` VALUES (7523001,'2017-08-24',4892.47,7523),(7523002,'2017-09-11',4892.47,7523),(7523003,'2017-10-10',4892.47,7523),(7523004,'2017-11-16',4892.47,7523),(8676001,'2017-10-20',22766.7,8676),(8676002,'2017-10-20',22766.7,8676),(8676003,'2017-11-30',22766.7,8676),(8676004,'2017-11-30',22766.7,8676),(9594001,'2017-11-08',11523.5,9594),(9594002,'2017-12-15',11523.5,9594);
 /*!40000 ALTER TABLE `Pagamento` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -143,4 +142,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-08-20 22:08:40
+-- Dump completed on 2018-08-22 17:28:03
