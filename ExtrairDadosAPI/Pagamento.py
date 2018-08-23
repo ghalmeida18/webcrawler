@@ -1,6 +1,7 @@
 class Pagamento (object):
 
-    def __init__(self, Numero, DataPagamento, ValorPagamento):
-        self.Numero = int (Numero)
-        self.DataPagamento = str(DataPagamento)
-        self.ValorPagamento = ConverteValor(ValorPagamento)
+    def __init__(self, numero, dataPagamento, valorPagamento,numEmpenho):
+        self.numero = numero
+        self.dataPagamento = dataPagamento
+        self.valorPagamento = valorPagamento
+        self.numEmpenho = numEmpenho

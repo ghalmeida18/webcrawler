@@ -2,7 +2,10 @@ import json
 import requests
 import pymysql.cursors
 from datetime import datetime
+import sys
+import time
 
+import Pagamento
 import Cliente
 import Empenho
 
@@ -43,24 +46,27 @@ def recuperaClientesInsereBanco(link):
 def recuperaEmpenhoInsereBanco(idCliente):
 
 
-	pagina = 0
+
 	controlador = True
 
-	contadorDeEmpenhos = 0
+	contadorEmpenhos = 0
+	pagina = 0
 
 	while controlador:
+
 		pagina = pagina + 1
-		print(pagina)
+
+
+
 		link = "http://transparencia.portalfacil.com.br/api/empenhos?type=json&idCliente="+str(idCliente)+"&page="+str(pagina)+"&pageSize=100&dtInicio=01/01/2018&dtFim=31/12/2018"
 		#link = "http://transparencia.portalfacil.com.br/api/empenhos?type=json&idCliente="+str(idCliente)+"&page=21&pageSize=100&dtInicio=01/01/2018&dtFim=31/12/2018"
 		con = conectaBanco()
 		listaEmpenhos = []
-
 		r = requests.get(link)
 		if r.status_code == 200:
 			reddit_data = json.loads(r.content)
 			if len(reddit_data)==21:
-				print("arroz")
+				print("FIM DE RECUPERACAO DE DADOS")
 				return
 
 
@@ -92,7 +98,6 @@ def recuperaEmpenhoInsereBanco(idCliente):
 
 					#INSERINDO FAVORECIDO
 					empenho.insereFavorecido(reddit['DescFornecedor'],reddit['NumCpfCnpjFornecedor'],"=====CARGO TESTE=====")
-
 
 					cursor = con.cursor()
 					#INSERE NOVO FAVORECIDO CASO NÃO TENHA NO BANCO DE DADOS
@@ -131,10 +136,70 @@ def recuperaEmpenhoInsereBanco(idCliente):
 						str(idCliente)
 						))
 					con.commit()
-					contadorDeEmpenhos = contadorDeEmpenhos + 1
-					print(contadorDeEmpenhos)
+					contadorEmpenhos = contadorEmpenhos + 1
+					print("Empenho {}".format (contadorEmpenhos))
+					sys.stdout.write("\033[F")
+					time.sleep(0.1)
 				except :
 					print("Erro empenho")
+
+		#return
+
+	con.close()
+
+
+def recuperaPagamentoInsereBanco(idCliente):
+
+	#iniciando variaveis
+	controlador = True
+	contadorPagamento= 0
+	pagina = 0
+
+	while controlador:
+
+		pagina = pagina + 1
+		link = "http://transparencia.portalfacil.com.br/api/pagamentos?type=json&idCliente="+str(idCliente)+"&page="+str(pagina)+"&pageSize=100&dtInicio=01/01/2018&dtFim=31/12/2018"
+
+		con = conectaBanco()
+		listaEmpenhos = []
+
+		r = requests.get(link)
+		if r.status_code == 200:
+			reddit_data = json.loads(r.content)
+			if len(reddit_data)==21:
+				print("FIM DE RECUPERACAO DE DADOS")
+				return
+
+
+			for reddit in reddit_data:
+				try:
+					pagamento = Pagamento.Pagamento(
+						reddit['NumPagamento'],
+						reddit['DtPagamento'],
+						reddit['VlPagamento'],
+						reddit['NumEmpenho']
+					)
+
+					#INSERINDO NO BANCO DE DADOS
+					cursor = con.cursor()
+					sqlquery = "INSERT INTO Pagamento(Numero,DataPagamento,ValorPagamento,Empenho_Numero) VALUES (%s, %s, %s, %s);"
+					data  = datetime.strptime(pagamento.dataPagamento, "%d/%m/%Y").strftime("%Y-%m-%d")
+
+					cursor.execute(sqlquery, (
+					pagamento.numero,
+					data,
+					pagamento.valorPagamento,
+					pagamento.numero
+					))
+
+					con.commit()
+					contadorPagamento = contadorPagamento + 1
+					print("Pagamento {}".format (contadorPagamento))
+					sys.stdout.write("\033[F")
+					time.sleep(0.1)
+
+				except :
+					print("Erro Pagamento")
 
 		#return
 
