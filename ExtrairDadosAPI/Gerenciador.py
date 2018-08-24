@@ -55,10 +55,11 @@ def recuperaEmpenhoInsereBanco(idCliente):
 	while controlador:
 
 		pagina = pagina + 1
+		dataInicio = "01/01/2017"
+		dataFim = "31/12/2017"
 
 
-
-		link = "http://transparencia.portalfacil.com.br/api/empenhos?type=json&idCliente="+str(idCliente)+"&page="+str(pagina)+"&pageSize=100&dtInicio=01/01/2018&dtFim=31/12/2018"
+		link = "http://transparencia.portalfacil.com.br/api/empenhos?type=json&idCliente="+str(idCliente)+"&page="+str(pagina)+"&pageSize=100&dtInicio="+dataInicio+"&dtFim="+dataFim
 		#link = "http://transparencia.portalfacil.com.br/api/empenhos?type=json&idCliente="+str(idCliente)+"&page=21&pageSize=100&dtInicio=01/01/2018&dtFim=31/12/2018"
 		con = conectaBanco()
 		listaEmpenhos = []
@@ -136,10 +137,12 @@ def recuperaEmpenhoInsereBanco(idCliente):
 						str(idCliente)
 						))
 					con.commit()
+
 					contadorEmpenhos = contadorEmpenhos + 1
 					print("Empenho {}".format (contadorEmpenhos))
 					sys.stdout.write("\033[F")
 					time.sleep(0.1)
+
 				except :
 					print("Erro empenho")
 
@@ -158,7 +161,9 @@ def recuperaPagamentoInsereBanco(idCliente):
 	while controlador:
 
 		pagina = pagina + 1
-		link = "http://transparencia.portalfacil.com.br/api/pagamentos?type=json&idCliente="+str(idCliente)+"&page="+str(pagina)+"&pageSize=100&dtInicio=01/01/2018&dtFim=31/12/2018"
+		dataInicio = "01/01/2017"
+		dataFim = "31/12/2017"
+		link = "http://transparencia.portalfacil.com.br/api/pagamentos?type=json&idCliente="+str(idCliente)+"&page="+str(pagina)+"&pageSize=100&dtInicio="+dataInicio+"&dtFim="+dataFim
 
 		con = conectaBanco()
 		listaEmpenhos = []
