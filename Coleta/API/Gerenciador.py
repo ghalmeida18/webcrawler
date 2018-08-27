@@ -67,7 +67,7 @@ def recuperaEmpenhoInsereBanco(idCliente):
 		if r.status_code == 200:
 			reddit_data = json.loads(r.content)
 			if len(reddit_data)==21:
-				print("FIM DE RECUPERACAO DE DADOS")
+				print("FIM DE RECUPERACAO DE EMPENHOS")
 				return
 
 
@@ -103,11 +103,12 @@ def recuperaEmpenhoInsereBanco(idCliente):
 					cursor = con.cursor()
 					#INSERE NOVO FAVORECIDO CASO NÃO TENHA NO BANCO DE DADOS
 					if(not(cursor.execute("SELECT * from Favorecido where Nome = '" + empenho.retornaFavorecido().retornaNome() + "'"))):
-						sqlquery = "INSERT INTO Favorecido(CPF_CNPJ, Nome, Cargo) VALUES (%s, %s, %s);"
+						sqlquery = "INSERT INTO Favorecido(CPF_CNPJ, Nome, Cargo,idCliente) VALUES (%s, %s, %s,%s);"
 						cursor.execute(sqlquery,(
 						        empenho.retornaFavorecido().CPF_CNPJ,
 						        empenho.retornaFavorecido().retornaNome(),
-						        empenho.retornaFavorecido().retornaCargo()
+						        empenho.retornaFavorecido().retornaCargo(),
+								str(idCliente)
 						        ))
 						con.commit()
 
@@ -172,7 +173,7 @@ def recuperaPagamentoInsereBanco(idCliente):
 		if r.status_code == 200:
 			reddit_data = json.loads(r.content)
 			if len(reddit_data)==21:
-				print("FIM DE RECUPERACAO DE DADOS")
+				print("FIM DE RECUPERACAO DE PAGAMENTOS")
 				return
 
 
