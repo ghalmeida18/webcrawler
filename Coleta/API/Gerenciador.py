@@ -158,7 +158,6 @@ def recuperaPagamentoInsereBanco(idCliente,dataInicio,dataFim):
 
 		pagina = pagina + 1
 		link = "http://transparencia.portalfacil.com.br/api/pagamentos?type=json&idCliente="+str(idCliente)+"&page="+str(pagina)+"&pageSize=100&dtInicio="+dataInicio+"&dtFim="+dataFim
-
 		con = conectaBanco()
 		listaEmpenhos = []
 
@@ -202,7 +201,6 @@ def recuperaPagamentoInsereBanco(idCliente,dataInicio,dataFim):
 					print("Erro Pagamento")
 					print(pagina)
 					print("INSERT INTO Pagamento(Numero,DataPagamento,ValorPagamento,Empenho_Numero) VALUES ("+str(pagamento.numero)+","+str(data)+","+str(pagamento.valorPagamento)+","+str(pagamento.numero)+")")
-
 
 		#return
 
