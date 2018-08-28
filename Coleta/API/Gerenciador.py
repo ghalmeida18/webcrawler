@@ -41,9 +41,7 @@ def recuperaClientesInsereBanco(link):
 				print("Erro ao inserir cidade")
 	con.close()
 
-
-
-def recuperaEmpenhoInsereBanco(idCliente):
+def recuperaEmpenhoInsereBanco(idCliente,dataInicio,dataFim):
 
 
 
@@ -55,12 +53,9 @@ def recuperaEmpenhoInsereBanco(idCliente):
 	while controlador:
 
 		pagina = pagina + 1
-		dataInicio = "01/01/2017"
-		dataFim = "31/12/2017"
-
 
 		link = "http://transparencia.portalfacil.com.br/api/empenhos?type=json&idCliente="+str(idCliente)+"&page="+str(pagina)+"&pageSize=100&dtInicio="+dataInicio+"&dtFim="+dataFim
-		#link = "http://transparencia.portalfacil.com.br/api/empenhos?type=json&idCliente="+str(idCliente)+"&page=21&pageSize=100&dtInicio=01/01/2018&dtFim=31/12/2018"
+		print(link)
 		con = conectaBanco()
 		listaEmpenhos = []
 		r = requests.get(link)
@@ -152,7 +147,7 @@ def recuperaEmpenhoInsereBanco(idCliente):
 	con.close()
 
 
-def recuperaPagamentoInsereBanco(idCliente):
+def recuperaPagamentoInsereBanco(idCliente,dataInicio,dataFim):
 
 	#iniciando variaveis
 	controlador = True
@@ -162,8 +157,6 @@ def recuperaPagamentoInsereBanco(idCliente):
 	while controlador:
 
 		pagina = pagina + 1
-		dataInicio = "01/01/2017"
-		dataFim = "31/12/2017"
 		link = "http://transparencia.portalfacil.com.br/api/pagamentos?type=json&idCliente="+str(idCliente)+"&page="+str(pagina)+"&pageSize=100&dtInicio="+dataInicio+"&dtFim="+dataFim
 
 		con = conectaBanco()
@@ -214,3 +207,16 @@ def recuperaPagamentoInsereBanco(idCliente):
 		#return
 
 	con.close()
+
+def limpaDadosBanco(nomeTabela):
+	con = conectaBanco()
+	cursor = con.cursor()
+
+	sqlquery = "SET FOREIGN_KEY_CHECKS = 0;"
+	cursor.execute(sqlquery)
+	con.commit()
+
+	sqlquery = "TRUNCATE "+nomeTabela+";"
+	cursor.execute(sqlquery)
+	con.commit()
+	print("DADOS DA TABELA "+nomeTabela+" EXCLUIDOS")
