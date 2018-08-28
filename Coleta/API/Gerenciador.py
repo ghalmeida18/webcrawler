@@ -188,14 +188,15 @@ def recuperaPagamentoInsereBanco(idCliente):
 
 					#INSERINDO NO BANCO DE DADOS
 					cursor = con.cursor()
-					sqlquery = "INSERT INTO Pagamento(Numero,DataPagamento,ValorPagamento,Empenho_Numero) VALUES (%s, %s, %s, %s);"
+					sqlquery = "INSERT INTO Pagamento(Numero,DataPagamento,ValorPagamento,Empenho_Numero,idCliente) VALUES (%s, %s, %s, %s, %s);"
 					data  = datetime.strptime(pagamento.dataPagamento, "%d/%m/%Y").strftime("%Y-%m-%d")
 
 					cursor.execute(sqlquery, (
 					pagamento.numero,
 					data,
 					pagamento.valorPagamento,
-					pagamento.numero
+					pagamento.numEmpenho,
+					str(idCliente)
 					))
 
 					con.commit()
@@ -206,6 +207,9 @@ def recuperaPagamentoInsereBanco(idCliente):
 
 				except :
 					print("Erro Pagamento")
+					print(pagina)
+					print("INSERT INTO Pagamento(Numero,DataPagamento,ValorPagamento,Empenho_Numero) VALUES ("+str(pagamento.numero)+","+str(data)+","+str(pagamento.valorPagamento)+","+str(pagamento.numero)+")")
+
 
 		#return
 
