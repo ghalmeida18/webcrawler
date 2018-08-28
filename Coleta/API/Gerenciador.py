@@ -41,9 +41,7 @@ def recuperaClientesInsereBanco(link):
 				print("Erro ao inserir cidade")
 	con.close()
 
-
-
-def recuperaEmpenhoInsereBanco(idCliente):
+def recuperaEmpenhoInsereBanco(idCliente,dataInicio,dataFim):
 
 
 
@@ -55,12 +53,9 @@ def recuperaEmpenhoInsereBanco(idCliente):
 	while controlador:
 
 		pagina = pagina + 1
-		dataInicio = "01/01/2017"
-		dataFim = "31/12/2017"
-
 
 		link = "http://transparencia.portalfacil.com.br/api/empenhos?type=json&idCliente="+str(idCliente)+"&page="+str(pagina)+"&pageSize=100&dtInicio="+dataInicio+"&dtFim="+dataFim
-		#link = "http://transparencia.portalfacil.com.br/api/empenhos?type=json&idCliente="+str(idCliente)+"&page=21&pageSize=100&dtInicio=01/01/2018&dtFim=31/12/2018"
+		print(link)
 		con = conectaBanco()
 		listaEmpenhos = []
 		r = requests.get(link)
@@ -103,7 +98,7 @@ def recuperaEmpenhoInsereBanco(idCliente):
 					cursor = con.cursor()
 					#INSERE NOVO FAVORECIDO CASO NÃO TENHA NO BANCO DE DADOS
 					if(not(cursor.execute("SELECT * from Favorecido where Nome = '" + empenho.retornaFavorecido().retornaNome() + "'"))):
-						sqlquery = "INSERT INTO Favorecido(CPF_CNPJ, Nome, Cargo,idCliente) VALUES (%s, %s, %s,%s);"
+						sqlquery = "INSERT INTO Favorecido(CPF_CNPJ, Nome, Cargo,idCliente) VALUES (%s, %s, %s, %s);"
 						cursor.execute(sqlquery,(
 						        empenho.retornaFavorecido().CPF_CNPJ,
 						        empenho.retornaFavorecido().retornaNome(),
@@ -119,6 +114,7 @@ def recuperaEmpenhoInsereBanco(idCliente):
 
 					#INSERE EMPENHO
 					sqlquery = "INSERT INTO Empenho(Especie,Orgao,Projeto,Elemento,Licitacao,Processo,DataEmpenho,Valor,Empenho_Numero,IdFavorecido,Funcao,SubFuncao,Programa,Destinacao,idCliente) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
+
 
 					cursor.execute(sqlquery,(
 						empenho.especie,
@@ -152,7 +148,7 @@ def recuperaEmpenhoInsereBanco(idCliente):
 	con.close()
 
 
-def recuperaPagamentoInsereBanco(idCliente):
+def recuperaPagamentoInsereBanco(idCliente,dataInicio,dataFim):
 
 	#iniciando variaveis
 	controlador = True
@@ -162,8 +158,6 @@ def recuperaPagamentoInsereBanco(idCliente):
 	while controlador:
 
 		pagina = pagina + 1
-		dataInicio = "01/01/2017"
-		dataFim = "31/12/2017"
 		link = "http://transparencia.portalfacil.com.br/api/pagamentos?type=json&idCliente="+str(idCliente)+"&page="+str(pagina)+"&pageSize=100&dtInicio="+dataInicio+"&dtFim="+dataFim
 		con = conectaBanco()
 		listaEmpenhos = []
@@ -212,3 +206,52 @@ def recuperaPagamentoInsereBanco(idCliente):
 		#return
 
 	con.close()
+
+def limpaDadosBanco(nomeTabela):
+	con = conectaBanco()
+	cursor = con.cursor()
+
+	sqlquery = "SET FOREIGN_KEY_CHECKS = 0;"
+	cursor.execute(sqlquery)
+	con.commit()
+
+	sqlquery = "TRUNCATE "+nomeTabela+";"
+	cursor.execute(sqlquery)
+	con.commit()
+	print("DADOS DA TABELA "+nomeTabela+" EXCLUIDOS")
+	con.close()
+
+#retorna lista de clientes adicionados no banco
+def retornaClientes():
+	listaClientes = []
+	con = conectaBanco()
+	cursor = con.cursor()
+
+	cursor.execute("SELECT * from Cliente")
+
+	while True:
+		retorno = cursor.fetchone()
+		if(retorno == None):
+			break
+		listaClientes.append(Cliente.Cliente(retorno['idCliente'],retorno['nome']))
+
+	return listaClientes
+
+#verifica se clientes retornam empenhos
+#retorna lista de clientes que nao retorna empenhos pela api
+def verificaSeRetornaEmpenho():
+	listaClientes = retornaClientes()
+	listaClientesSemEmpenho = []
+	for cliente in listaClientes:
+
+		idCliente = cliente.idcliente
+		print(idCliente)
+		link = "http://transparencia.portalfacil.com.br/api/empenhos?type=json&idCliente="+str(idCliente)+"&page=1&pageSize=100&dtInicio=01/01/2017&dtFim=31/12/2017"
+		try:
+			r = requests.get(link)
+			reddit_data = json.loads(r.content)
+			if(reddit_data=="Erro: Contate o Administrador do Sistema!"):
+				listaClientesSemEmpenho.append(cliente)
+		except ConnectionError as err:
+			print(err)
+	return listaClientesSemEmpenho
