@@ -55,10 +55,10 @@ def recuperaEmpenhoInsereBanco(idCliente,dataInicio,dataFim):
 		pagina = pagina + 1
 
 		link = "http://transparencia.portalfacil.com.br/api/empenhos?type=json&idCliente="+str(idCliente)+"&page="+str(pagina)+"&pageSize=100&dtInicio="+dataInicio+"&dtFim="+dataFim
-		print(link)
 		con = conectaBanco()
 		listaEmpenhos = []
 		r = requests.get(link)
+		
 		if r.status_code == 200:
 			reddit_data = json.loads(r.content)
 			if len(reddit_data)==21:
@@ -113,7 +113,7 @@ def recuperaEmpenhoInsereBanco(idCliente,dataInicio,dataFim):
 					idFavorecido = str(IdRetornado['IdFavorecido'])
 
 					#INSERE EMPENHO
-					sqlquery = "INSERT INTO Empenho(Especie,Orgao,Projeto,Elemento,Licitacao,Processo,DataEmpenho,Valor,Empenho_Numero,IdFavorecido,Funcao,SubFuncao,Programa,Destinacao,idCliente) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
+					sqlquery = "INSERT INTO Empenho(Especie,Orgao,Projeto,Elemento,Licitacao,Processo,DataEmpenho,Valor,NumeroEmpenho,IdFavorecido,Funcao,SubFuncao,Programa,Destinacao,idCliente) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
 
 
 					cursor.execute(sqlquery,(
@@ -140,7 +140,8 @@ def recuperaEmpenhoInsereBanco(idCliente,dataInicio,dataFim):
 					sys.stdout.write("\033[F")
 					time.sleep(0.1)
 
-				except :
+				except exception:
+
 					print("Erro empenho")
 
 		#return
@@ -179,9 +180,17 @@ def recuperaPagamentoInsereBanco(idCliente,dataInicio,dataFim):
 						reddit['NumEmpenho']
 					)
 
-					#INSERINDO NO BANCO DE DADOS
+
 					cursor = con.cursor()
-					sqlquery = "INSERT INTO Pagamento(Numero,DataPagamento,ValorPagamento,Empenho_Numero,idCliente) VALUES (%s, %s, %s, %s, %s);"
+					#RETORNA O ID DO EMPENHO RELACIONADO AO PAGAMENTO
+					cursor.execute("SELECT idEmpenho from Empenho where NumeroEmpenho = "+pagamento.numEmpenho+" AND idCliente = "+str(idCliente))
+					retorno = cursor.fetchone()
+					if(retorno != None):
+						idEmpenho = str(retorno['idEmpenho'])
+						print("-----------------------------------------------------------------------------------")
+
+					#INSERINDO NO BANCO DE DADOS
+					sqlquery = "INSERT INTO Pagamento(NumeroPagamento,DataPagamento,ValorPagamento,NumeroEmpenho,idCliente,idEmpenho) VALUES (%s, %s, %s, %s, %s, %s);"
 					data  = datetime.strptime(pagamento.dataPagamento, "%d/%m/%Y").strftime("%Y-%m-%d")
 
 					cursor.execute(sqlquery, (
@@ -189,9 +198,10 @@ def recuperaPagamentoInsereBanco(idCliente,dataInicio,dataFim):
 					data,
 					pagamento.valorPagamento,
 					pagamento.numEmpenho,
-					str(idCliente)
+					str(idCliente),
+					str(idEmpenho)
 					))
-
+					print("aaaaaaaaaaaaaaaaaaaaaaaa")
 					con.commit()
 					contadorPagamento = contadorPagamento + 1
 					print("Pagamento {}".format (contadorPagamento))
@@ -201,7 +211,7 @@ def recuperaPagamentoInsereBanco(idCliente,dataInicio,dataFim):
 				except :
 					print("Erro Pagamento")
 					print(pagina)
-					print("INSERT INTO Pagamento(Numero,DataPagamento,ValorPagamento,Empenho_Numero) VALUES ("+str(pagamento.numero)+","+str(data)+","+str(pagamento.valorPagamento)+","+str(pagamento.numero)+")")
+					print("INSERT INTO Pagamento(NumeroPagamento,DataPagamento,ValorPagamento,NumeroEmpenho,idCliente,idEmpenho) VALUES ("+str(pagamento.numero)+","+str(data)+","+str(pagamento.valorPagamento)+","+str(pagamento.numero)+","+str(idCliente)+","+idEmpenho+")")
 
 		#return
 
@@ -235,6 +245,7 @@ def retornaClientes():
 			break
 		listaClientes.append(Cliente.Cliente(retorno['idCliente'],retorno['nome']))
 
+	con.close()
 	return listaClientes
 
 #verifica se clientes retornam empenhos
