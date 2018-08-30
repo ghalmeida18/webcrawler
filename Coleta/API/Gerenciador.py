@@ -60,13 +60,10 @@ def recuperaEmpenhoInsereBanco(idCliente,dataInicio,dataFim):
 		listaEmpenhos = []
 
 		try:
-			print("1")
 			r = requests.get(link)
-			print("2")
 			if r.status_code == 200:
 				reddit_data = json.loads(r.content)
 				if len(reddit_data)==21:
-					print("asdsa")
 					print("FIM DE RECUPERACAO DE EMPENHOS")
 					return
 				for reddit in reddit_data:
@@ -83,7 +80,6 @@ def recuperaEmpenhoInsereBanco(idCliente,dataInicio,dataFim):
 
 						empenho.processo = reddit['NumProcesso']
 						empenho.dataEmpenho = reddit['DtEmpenho']
-
 
 						data  = datetime.strptime(empenho.dataEmpenho,"%d/%m/%Y").strftime("%Y-%m-%d")
 
@@ -114,10 +110,8 @@ def recuperaEmpenhoInsereBanco(idCliente,dataInicio,dataFim):
 						cursor.execute("SELECT IdFavorecido from Favorecido where Nome = '"+empenho.retornaFavorecido().retornaNome()+"'")
 						IdRetornado = cursor.fetchone()
 						idFavorecido = str(IdRetornado['IdFavorecido'])
-
 						#INSERE EMPENHO
 						sqlquery = "INSERT INTO Empenho(Especie,Orgao,Projeto,Elemento,Licitacao,Processo,DataEmpenho,Valor,NumeroEmpenho,IdFavorecido,Funcao,SubFuncao,Programa,Destinacao,idCliente) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
-
 
 						cursor.execute(sqlquery,(
 							empenho.especie,
@@ -147,7 +141,7 @@ def recuperaEmpenhoInsereBanco(idCliente,dataInicio,dataFim):
 						print("Erro empenho")
 			pagina = pagina +1
 		except:
-			print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+			print("ERRO DE CONEXÃO EMPENHO")
 			#return
 
 
@@ -159,64 +153,64 @@ def recuperaPagamentoInsereBanco(idCliente,dataInicio,dataFim):
 	#iniciando variaveis
 	controlador = True
 	contadorPagamento= 0
-	pagina = 0
+	pagina = 1
 
 	while controlador:
 
-		pagina = pagina + 1
+
 		link = "http://transparencia.portalfacil.com.br/api/pagamentos?type=json&idCliente="+str(idCliente)+"&page="+str(pagina)+"&pageSize=100&dtInicio="+dataInicio+"&dtFim="+dataFim
 		con = conectaBanco()
 		listaEmpenhos = []
-
-		r = requests.get(link)
-		if r.status_code == 200:
-			reddit_data = json.loads(r.content)
-			if len(reddit_data)==21:
-				print("FIM DE RECUPERACAO DE PAGAMENTOS")
-				return
-
-
-			for reddit in reddit_data:
-				try:
-					pagamento = Pagamento.Pagamento(
-						reddit['NumPagamento'],
-						reddit['DtPagamento'],
-						reddit['VlPagamento'],
-						reddit['NumEmpenho']
-					)
+		try:
+			r = requests.get(link)
+			if r.status_code == 200:
+				reddit_data = json.loads(r.content)
+				if len(reddit_data)==21:
+					print("FIM DE RECUPERACAO DE PAGAMENTOS")
+					return
 
 
-					cursor = con.cursor()
-					#RETORNA O ID DO EMPENHO RELACIONADO AO PAGAMENTO
-					cursor.execute("SELECT idEmpenho from Empenho where NumeroEmpenho = "+pagamento.numEmpenho+" AND idCliente = "+str(idCliente))
-					retorno = cursor.fetchone()
-					if(retorno != None):
-						idEmpenho = str(retorno['idEmpenho'])
-						print("-----------------------------------------------------------------------------------")
+				for reddit in reddit_data:
+					try:
+						pagamento = Pagamento.Pagamento(
+							reddit['NumPagamento'],
+							reddit['DtPagamento'],
+							reddit['VlPagamento'],
+							reddit['NumEmpenho']
+						)
 
-					#INSERINDO NO BANCO DE DADOS
-					sqlquery = "INSERT INTO Pagamento(NumeroPagamento,DataPagamento,ValorPagamento,NumeroEmpenho,idCliente,idEmpenho) VALUES (%s, %s, %s, %s, %s, %s);"
-					data  = datetime.strptime(pagamento.dataPagamento, "%d/%m/%Y").strftime("%Y-%m-%d")
 
-					cursor.execute(sqlquery, (
-					pagamento.numero,
-					data,
-					pagamento.valorPagamento,
-					pagamento.numEmpenho,
-					str(idCliente),
-					str(idEmpenho)
-					))
-					print("aaaaaaaaaaaaaaaaaaaaaaaa")
-					con.commit()
-					contadorPagamento = contadorPagamento + 1
-					print("Pagamento {}".format (contadorPagamento))
-					sys.stdout.write("\033[F")
-					time.sleep(0.1)
+						cursor = con.cursor()
+						#RETORNA O ID DO EMPENHO RELACIONADO AO PAGAMENTO
+						cursor.execute("SELECT idEmpenho from Empenho where NumeroEmpenho = "+pagamento.numEmpenho+" AND idCliente = "+str(idCliente))
+						retorno = cursor.fetchone()
+						if(retorno != None):
+							idEmpenho = str(retorno['idEmpenho'])
 
-				except :
-					print("Erro Pagamento")
-					print(pagina)
-					print("INSERT INTO Pagamento(NumeroPagamento,DataPagamento,ValorPagamento,NumeroEmpenho,idCliente,idEmpenho) VALUES ("+str(pagamento.numero)+","+str(data)+","+str(pagamento.valorPagamento)+","+str(pagamento.numero)+","+str(idCliente)+","+idEmpenho+")")
+						#INSERINDO NO BANCO DE DADOS
+						sqlquery = "INSERT INTO Pagamento(NumeroPagamento,DataPagamento,ValorPagamento,NumeroEmpenho,idCliente,idEmpenho) VALUES (%s, %s, %s, %s, %s, %s);"
+						data  = datetime.strptime(pagamento.dataPagamento, "%d/%m/%Y").strftime("%Y-%m-%d")
+
+						cursor.execute(sqlquery, (
+						pagamento.numero,
+						data,
+						pagamento.valorPagamento,
+						pagamento.numEmpenho,
+						str(idCliente),
+						str(idEmpenho)
+						))
+
+						con.commit()
+						contadorPagamento = contadorPagamento + 1
+						print("Pagamento {}".format (contadorPagamento))
+						sys.stdout.write("\033[F")
+						time.sleep(0.1)
+
+					except :
+						print("Erro Pagamento")
+			pagina = pagina + 1
+		except:
+			print("ERRO DE CONEXÃO PAGAMENTO")
 
 		#return
 
