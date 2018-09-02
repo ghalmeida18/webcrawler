@@ -1,0 +1,523 @@
+{% extends "index.html" %}
+{% load staticfiles %}
+
+{% block main %}
+
+
+<script src="https://code.jquery.com/jquery-1.9.1.js"></script>
+
+<p></p>
+<div class="container">
+  <h2 class="text-center text-uppercase text-secondary mb-0">Informações Iniciais</h2>
+  <hr class="star-dark mb-5">
+</div>
+</div>
+
+
+<div class="container">
+
+  <div class="pure-g-r content-ribbon">
+    <div class="pure-u-2-3">
+      <div class="l-box">
+
+        <h3>O que é?</h3>
+        <p align=".text-justify">
+          Com base nos dados disponibilizados no portal da Transparencia de Pará de Minas,
+          foram capturados todos os dados lá disponiveis e gerado gráficos detalhados e bem chamativos! Clique na aba "Dashboard" para saber mais a respeito.
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="pure-g-r content-ribbon">
+    <div class="pure-u-2-3">
+      <div class="l-box">
+        <h3>Como Funciona as divisões?</h3>
+        <p align=".text-justify">
+          Você encontra diversas opções de divisões das despesas que, juntas, totalizam o gasto total da prefeitura. Os dados são reais, e é possível buscá-los no site oficial da prefeitura. As divisões vão de grandes áreas como saúde e educação, até mais específico, como valores pagos à servidores ligados ao gabinete do prefeito.
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="pure-g-r content-ribbon">
+    <div class="pure-u-2-3">
+      <div class="l-box">
+        <h3>Isso é correto ser feito?</h3>
+        <p align="justify">
+          De acordo com a A Lei da Transparência (Lei Complementar 131/2009), devem ser disponibilizadas informações reais e detalhadas sobre a execução orçamentária e financeira da União, dos Estados, dos Municípios e do Distrito Federal. Só deixamos mais fácil o entendimento! 
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="pure-g-r content-ribbon">
+    <div class="pure-u-2-3">
+      <div class="l-box">
+        <h3>Qual o principal objetivo?</h3>
+        <p align="justify">
+          Nosso principal foco é desenvoler um sistema de código aberto, de fácil utilização, em que qualquer pessoa de qualquer cidade brasileira possa executá-lo e armazenar todas as informações em um Banco de Dados (referente à prefeitura de sua cidade). Com os dados armazenados, pode-se utilizar métodos já criados e testados, que geram gráficos e ralatórios de forma simples e eficiente. Consequentemente, de posse das informações gráficas e relatórios, pode-se analisar e verificar possíveis não conformidades das despesas públicas.
+        </p>
+      </div>
+    </div>
+  </div>
+</div> 
+
+
+
+
+{% endblock %}
+
+
+
+{% block dashboard %}
+
+
+<p></p>
+<div class="container">
+ <h2 class="text-center text-uppercase text-secondary mb-0">Dashboard</h2>
+ <hr class="star-dark mb-5">
+</div>
+</div>
+
+
+
+<div class="container">
+  <h3>Despesas por agrupamentos</h3>
+  <p>Clique no botão abaixo para visualizar gráficos por agrupamentos.</p>
+  <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo">Gráficos</button>
+  <div id="demo" class="collapse in">
+
+
+
+    <div class="panel-group" id="accordion">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+            Despesas por Elemento</a>
+          </h4>
+        </div>
+        <div id="collapse1" class="panel-collapse collapse in">
+          <div class="panel-body">
+            <canvas class="line-chart1" height="600" ></canvas>"
+          </div>
+        </div>
+      </div>
+
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
+            Despesas por Órgão</a>
+          </h4>
+        </div>
+        <div id="collapse2" class="panel-collapse collapse">
+          <div class="panel-body">
+            <canvas class="line-chart2"></canvas>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapse3">
+            Despesas por Função</a>
+          </h4>
+        </div>
+        <div id="collapse3" class="panel-collapse collapse">
+          <div class="panel-body">
+            <canvas class="line-chart3"></canvas>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapse4">
+            Despesas por Subfunção</a>
+          </h4>
+        </div>
+        <div id="collapse4" class="panel-collapse collapse">
+          <div class="panel-body">
+            <canvas class="line-chart4"></canvas>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapse5">
+            Despesas por Projetos</a>
+          </h4>
+        </div>
+        <div id="collapse5" class="panel-collapse collapse">
+          <div class="panel-body">
+            <canvas class="line-chart5"  height="600" ></canvas>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapse6">
+            Despesas por Destinação</a>
+          </h4>
+        </div>
+        <div id="collapse6" class="panel-collapse collapse">
+          <div class="panel-body">
+            <canvas class="line-chart6"></canvas>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapse7">
+            Despesas por Mês (2017)</a>
+          </h4>
+        </div>
+        <div id="collapse7" class="panel-collapse collapse">
+          <div class="panel-body">
+            <canvas class="line-chart7"></canvas>
+          </div>
+        </div>
+      </div>
+
+
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapse8">
+            Despesas por Diárias</a>
+          </h4>
+        </div>
+        <div id="collapse8" class="panel-collapse collapse">
+          <div class="panel-body">
+            <canvas class="line-chart8" height="800"></canvas>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapse9">
+            Multas Indedutíveis</a>
+          </h4>
+        </div>
+        <div id="collapse9" class="panel-collapse collapse">
+          <div class="panel-body">
+            <canvas class="line-chart9"></canvas>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+
+  <div><hr class="star-dark mb-5"></div>
+
+
+  <div class="container1">
+    <h3>Relatórios Específicos</h3>
+    <p>Clique no botão abaixo para visualizar as opções de relatórios</p>
+    <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo1">Relatórios</button>
+    <div id="demo1" class="collapse in">
+
+
+     <div class="panel-group" id="accordion">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" data-parent="#accordion20" href="#collapse20">
+            Despesas Diárias (Pessoas Físicas)</a>
+          </h4>
+        </div>
+        <div id="collapse20" class="panel-collapse collapse in">
+          <div class="panel-body">
+            <div id="diarias"></div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="panel-group" id="accordion">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h4 class="panel-title">
+              <a data-toggle="collapse" data-parent="#accordion21" href="#collapse21">
+              Subsidio do Prefeito</a>
+            </h4>
+          </div>
+          <div id="collapse21" class="panel-collapse collapse in">
+            <div class="panel-body">
+              <div id="SubsP"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-group" id="accordion">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion22" href="#collapse22">
+                Cargos de Diárias</a>
+              </h4>
+            </div>
+            <div id="collapse22" class="panel-collapse collapse in">
+              <div class="panel-body">
+                <div id="CargosD"></div>
+              </div>
+            </div>
+          </div>
+
+
+
+
+
+
+        </div>
+      </div>
+
+
+
+
+      <script src = "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+
+
+
+
+      <script>  
+
+      function graf(tipo,chartID){
+
+
+        var ctx = document.getElementsByClassName(chartID)
+
+
+        var a = tipo.replace(/&quot;/g,'"')
+        var b = a.replace(/&#39;/g,'"')
+
+        var c = JSON.parse(b)
+
+
+
+        var u = []
+        var x = []
+        var i 
+        color = []
+        for (i=0;i<c.length;i++){
+          u.push(c[i].divisao)
+          x.push(c[i].soma)
+          if (i%2 == 0){
+            color.push("#383cf7")
+          }
+          else{
+            color.push("#38d163")
+          }
+        }
+
+
+
+        var chartGraph = new Chart(ctx, {
+          type:'horizontalBar',
+          responsive: true,
+          data:{
+            labels:u,
+            datasets: [{
+              backgroundColor: color,
+              label:"Gasto R$",
+              data: x
+
+            }]
+
+          },
+          options:{
+            scales:{
+              xAxes:[{
+                type:'logarithmic'
+              }]
+            }
+
+          }
+
+
+
+        });
+      }
+
+      function graf1(tipo,chartID){
+
+
+        var ctx = document.getElementsByClassName(chartID)
+
+
+        var a = tipo.replace(/&quot;/g,'"')
+        var b = a.replace(/&#39;/g,'"')
+
+        var c = JSON.parse(b)
+
+
+
+        var u = []
+        var x = []
+        var i 
+        color = []
+        for (i=0;i<c.length;i++){
+          u.push(c[i].nome)
+          x.push(c[i].qtd)
+          if (i%2 == 0){
+            color.push("#383cf7")
+          }
+          else{
+            color.push("#38d163")
+          }
+        }
+
+
+
+        var chartGraph = new Chart(ctx, {
+          type:'horizontalBar',
+          responsive: true,
+          data:{
+            labels:u,
+            datasets: [{
+              backgroundColor: color,
+              label:"Quntidade de Diárias",
+              data: x
+
+            }]
+
+          },
+
+
+
+        });
+      }
+
+      function ConverteJson(json){
+       var a = json.replace(/&quot;/g,'"');
+       var b = a.replace(/&#39;/g,'"');
+       var c = JSON.parse(b);
+       return c 
+     }
+
+
+
+     </script>
+
+
+
+
+
+     <script>
+     var c = ConverteJson('{{Ddiarias}}')
+
+     var arrayDiarias = [];
+
+
+     for (i=0;i<c.length;i++){
+       var Nome = c[i].Nome
+       var Valor = c[i].soma
+
+       var strHTML = "<p>Nome: "+Nome+" Valor: R$ "+Valor+"</p>";
+
+       arrayDiarias.push(strHTML);
+     }
+
+     function preencheDados(DIVid,arrayD){
+       $(DIVid).html(arrayD)
+     }
+
+     preencheDados('#diarias',arrayDiarias)
+
+     </script>
+
+
+     <script>
+     var c = ConverteJson('{{SubsPrefeito}}')
+
+     var arraySubP = [];
+
+     arraySubP.push("<p>"+c[0].Elemento+" Valor: R$ "+ c[0].soma+"</p>");
+
+
+     preencheDados("#SubsP",arraySubP)
+
+     </script>
+
+
+     <script>
+     var c = ConverteJson('{{Cargos}}')
+
+     var arrayCargos = [];
+
+
+     for (i=0;i<c.length;i++){
+      var Nome = c[i].Nome
+      var Cargo = c[i].Cargo
+
+      var strHTML = "<p>Nome: "+Nome+" Cargo: "+Cargo+"</p>";
+
+      arrayCargos.push(strHTML);
+    }
+
+    function preencheDados(DIVid,arrayD){
+      $(DIVid).html(arrayD)
+    }
+
+    preencheDados('#CargosD',arrayCargos)
+
+    </script>
+
+
+
+
+
+    
+    
+
+    <script>
+    graf('{{elemento}}',"line-chart1");
+    graf('{{orgao}}',"line-chart2");
+    graf('{{funcao}}',"line-chart3");
+    graf('{{subfuncao}}',"line-chart4");
+    graf('{{projeto}}',"line-chart5");
+    graf('{{destinacao}}',"line-chart6");
+    graf('{{pormes}}',"line-chart7");
+    graf1('{{qtdDiarias}}',"line-chart8");
+    graf('{{Multas}}',"line-chart9");
+
+
+    </script>
+
+
+
+
+
+
+
+
+
+    
+    
+
+
+
+
+
+
+    {% endblock %}
+

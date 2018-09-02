@@ -1,0 +1,68 @@
+<!--Auth Jose Diego Alves Duarte-->
+{% extends "base.html"%}
+{% load static %}
+
+{% block main %}
+
+<div class="pure-g-r content-ribbon">
+    <div class="pure-u-1">
+        <div class="l-box">
+            <h4 class="content-subhead">Listagem das cidades aderidas ao projeto</h4>
+            <p>Abaixo a lista de cidades</p>
+        </div>
+    </div>
+</div>
+
+{% for cidade in cidades %}
+<div class="pure-g-r content-ribbon">
+    <div class="pure-u-1-3">
+        <div class="l-box">
+            <a href="{% url 'cidades:details' cidade.slug %}">
+                {% if cidade.image %}
+                    <img src="{{ cidade.image.url }}" alt="{{ cidade.nameCidade }}">
+                {% else %}
+                    <img src="{% static 'img/cidade.png' %}" alt="{{ cidade.nameCidade }}">
+                {% endif %}
+            </a>
+        </div>
+    </div>
+    <div class="pure-u-2-3">
+        <div class="l-box">
+            <h4 class="content-subhead"><a href="{% url 'cidades:details' cidade.slug %}" title="">{{ cidade.nameCidade }}</a></h4>
+            <p>
+                {{ cidade.description | linebreaks }}
+            </p>
+        </div>
+    </div>
+</div>
+{% empty %}
+<div class="pure-g-r content-ribbon">
+    <div class="pure-u-1">
+        <div class="l-box">
+            <h4 class="content-subhead">Nenhuma cidade cadastrada</h4>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<div class="pagination">
+    <span class="step-links">
+        {% if cidades.has_previous %}
+            <a class="pure-button"href="?page=1">&laquo; Primeira</a>
+            <a class="pure-button"href="?page={{ cidades.previous_page_number }}">Anterior</a>
+        {% endif %}
+
+        <span class="current">
+            Página {{ cidades.number }} de {{ cidades.paginator.num_pages }}
+        </span>
+
+        {% if cidades.has_next %}
+            <a class="pure-button" href="?page={{ cidades.next_page_number }}">Proxima</a>
+            <a class="pure-button" href="?page={{ cidades.paginator.num_pages }}">Ultima &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+<p>
+    
+</p>
+{% endblock %}

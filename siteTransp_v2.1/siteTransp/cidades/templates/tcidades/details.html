@@ -1,0 +1,160 @@
+<!--Auth Jose Diego Alves Duarte-->
+{% extends "base.html"%}
+{% load static %}
+
+{% block main %}
+
+<div class="splash">
+    <div class="pure-g-r">
+        <div class="pure-u-1">
+            <div class="l-box splash-text">
+                <h1 class="splash-head">
+                    {{ cidade }}{# def __str__ ja esta retornando .nameCidade#}
+                </h1>
+                <h2 class="splash-subhead">
+                    {{ cidade.description }}
+
+                </h2>
+                <!--<p>
+                    <a href="#" class="pure-button primary-button">Inscreva-se</a>
+                </p>-->
+            </div>
+        </div>
+    </div>
+</div>
+<div class="pure-g-r content-ribbon">
+    <div class="pure-u-2-3">
+        <div class="l-box">
+            <h4 class="content-subhead">Informações da Cidade</h4>
+            {{ cidade.about | linebreaks }}
+            
+        </div>
+    </div>
+    <div class="pure-u-1-3">
+        <div class="l-box">
+            {% if cidade.image %}
+                <img src="{{ cidade.image.url }}" alt="" />
+            {% else %}
+                <img src="{% static 'img/cidade.png' %}" alt="" />
+            {% endif%}
+            
+        </div>
+        <h4>Dúvidas?</h4>
+        <p>
+            <a href="#contato" title="" class="pure-button">Fale Conosco</a>
+        </p>
+    </div>
+</div>
+
+<!--grid dos graficos-->
+
+
+    <div class="panel-heading">
+        <h4 class="panel-title">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+            Despesas por Elemento</a>
+        </h4>
+    </div>
+
+    <div id="collapse1" class="panel-collapse collapse in">
+        <div class="panel-body">
+            <canvas id="productsChart"></canvas>
+        </div>
+    </div>
+
+
+<!--
+<div class="pure-g-r content-ribbon"  id="cidadeGrafico">
+    <div class="pure-u ">
+        <p></p>
+        <div class="l-box ">
+            <h2 class="">
+                Grafico da cidade de {{ cidade }}{# def __str__ ja esta retornando .nameCidade#}
+            </h2>
+
+            <canvas id="productsChart" width="350" height="350"></canvas>
+
+        </div>
+    </div>
+</div>
+-->
+<div class="pure-g-r content-ribbon" id="contato">
+    <div class="pure-u-1">
+        <h3>Busca com filtro/h3>
+        {% if is_valid %}
+        <p>Você enviou o formulário com sucesso</p>
+         {{ dataInicial }} - {{ dataFinal }}
+        {% endif %}
+        <form action="#contato" class="pure-form pure-form-aligned" method="post">
+            {% csrf_token %}
+            <fieldset>
+                {% for field in form %}
+                <div class="pure-control-group">
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {% if field.errors %}
+                    <ul class="errorlist">
+                        {% for error in field.errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+                {% endfor %}
+                <div class="pure-controls">
+                    <button type="submit" class="pure-button pure-button-primary">Enviar</button>
+                </div>
+            </fieldset>
+        </form>
+
+    </div>
+</div>
+
+<!---->
+
+<!---->
+<script>
+var ctx = document.getElementById("productsChart");
+var names = JSON.parse('{{ names|safe }}');
+var prices = JSON.parse('{{ prices|safe }}');
+var productsChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: names,
+        datasets: [{
+            label: 'Produtos',
+            data: prices,
+            backgroundColor: [
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(255, 206, 86, 0.2)',
+            'rgba(75, 192, 192, 0.2)',
+            'rgba(153, 102, 255, 0.2)',
+            'rgba(255, 159, 64, 0.2)'
+            ],
+            borderColor: [
+            'rgba(255,99,132,1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(75, 192, 192, 1)',
+            'rgba(153, 102, 255, 1)',
+            'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:true
+                }
+            }]
+        }
+    }
+});
+</script>
+
+{% endblock %}
+
+
