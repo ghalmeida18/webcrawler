@@ -74,7 +74,7 @@ def recuperaEmpenhoInsereBanco(idCliente,dataInicio,dataFim):
 						empenho.numero=reddit['NumEmpenho']
 						empenho.especie = reddit['TpEmpenho']
 						empenho.orgao = reddit['NumUnidade']+" "+ reddit['DescUnidade']
-						empenho.projeto = "=========PROJETOTESTE========"
+						empenho.projeto = reddit['DescProjeto']
 						empenho.elemento =  reddit['NumDespesa']+" "+ reddit['DescDespesa']
 						empenho.licitacao = reddit['NumLicitacao']+" - "+reddit['DtLicitacao']+" - "+reddit['TpLicitacao']
 
@@ -112,6 +112,12 @@ def recuperaEmpenhoInsereBanco(idCliente,dataInicio,dataFim):
 						idFavorecido = str(IdRetornado['IdFavorecido'])
 						#INSERE EMPENHO
 						sqlquery = "INSERT INTO Empenho(Especie,Orgao,Projeto,Elemento,Licitacao,Processo,DataEmpenho,Valor,NumeroEmpenho,IdFavorecido,Funcao,SubFuncao,Programa,Destinacao,idCliente) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
+
+						# print(print("INSERT INTO Empenho(Especie,Orgao,Projeto,Elemento,Licitacao,Processo,DataEmpenho,Valor,NumeroEmpenho,IdFavorecido,Funcao,SubFuncao,Programa,Destinacao,idCliente) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')" % (	empenho.especie,empenho.orgao,empenho.projeto,empenho.elemento,empenho.licitacao,empenho.processo,data,empenho.valor,empenho.numero,idFavorecido,empenho.funcao,empenho.subFuncao,empenho.programa,empenho.destinacao,str(idCliente)) ))
+
+
+
+
 
 						cursor.execute(sqlquery,(
 							empenho.especie,
@@ -168,7 +174,6 @@ def recuperaPagamentoInsereBanco(idCliente,dataInicio,dataFim):
 				if len(reddit_data)==21:
 					print("FIM DE RECUPERACAO DE PAGAMENTOS")
 					return
-
 
 				for reddit in reddit_data:
 					try:
