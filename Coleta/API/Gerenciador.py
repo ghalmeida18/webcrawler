@@ -16,6 +16,8 @@ def conectaBanco():
                       	      user = 'root',
                               passwd='root',
                               db = 'Prefeitura',
+							  use_unicode=True,
+							  charset="utf8",
                               cursorclass=pymysql.cursors.DictCursor)
 	return con
 
@@ -68,7 +70,6 @@ def recuperaEmpenhoInsereBanco(idCliente,dataInicio,dataFim):
 					return
 				for reddit in reddit_data:
 					try:
-
 						empenho = Empenho.Empenho()
 
 						empenho.numero=reddit['NumEmpenho']
@@ -112,13 +113,6 @@ def recuperaEmpenhoInsereBanco(idCliente,dataInicio,dataFim):
 						idFavorecido = str(IdRetornado['IdFavorecido'])
 						#INSERE EMPENHO
 						sqlquery = "INSERT INTO Empenho(Especie,Orgao,Projeto,Elemento,Licitacao,Processo,DataEmpenho,Valor,NumeroEmpenho,IdFavorecido,Funcao,SubFuncao,Programa,Destinacao,idCliente) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
-
-						# print(print("INSERT INTO Empenho(Especie,Orgao,Projeto,Elemento,Licitacao,Processo,DataEmpenho,Valor,NumeroEmpenho,IdFavorecido,Funcao,SubFuncao,Programa,Destinacao,idCliente) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')" % (	empenho.especie,empenho.orgao,empenho.projeto,empenho.elemento,empenho.licitacao,empenho.processo,data,empenho.valor,empenho.numero,idFavorecido,empenho.funcao,empenho.subFuncao,empenho.programa,empenho.destinacao,str(idCliente)) ))
-
-
-
-
-
 						cursor.execute(sqlquery,(
 							empenho.especie,
 							empenho.orgao,
@@ -176,6 +170,7 @@ def recuperaPagamentoInsereBanco(idCliente,dataInicio,dataFim):
 					return
 
 				for reddit in reddit_data:
+
 					try:
 						pagamento = Pagamento.Pagamento(
 							reddit['NumPagamento'],
@@ -184,10 +179,9 @@ def recuperaPagamentoInsereBanco(idCliente,dataInicio,dataFim):
 							reddit['NumEmpenho']
 						)
 
-
 						cursor = con.cursor()
 						#RETORNA O ID DO EMPENHO RELACIONADO AO PAGAMENTO
-						cursor.execute("SELECT idEmpenho from Empenho where NumeroEmpenho = "+pagamento.numEmpenho+" AND idCliente = "+str(idCliente))
+						cursor.execute("SELECT idEmpenho from Empenho where NumeroEmpenho = '"+pagamento.numEmpenho+"' AND idCliente = "+str(idCliente))
 						retorno = cursor.fetchone()
 						if(retorno != None):
 							idEmpenho = str(retorno['idEmpenho'])
@@ -195,7 +189,6 @@ def recuperaPagamentoInsereBanco(idCliente,dataInicio,dataFim):
 						#INSERINDO NO BANCO DE DADOS
 						sqlquery = "INSERT INTO Pagamento(NumeroPagamento,DataPagamento,ValorPagamento,NumeroEmpenho,idCliente,idEmpenho) VALUES (%s, %s, %s, %s, %s, %s);"
 						data  = datetime.strptime(pagamento.dataPagamento, "%d/%m/%Y").strftime("%Y-%m-%d")
-
 						cursor.execute(sqlquery, (
 						pagamento.numero,
 						data,
@@ -204,7 +197,6 @@ def recuperaPagamentoInsereBanco(idCliente,dataInicio,dataFim):
 						str(idCliente),
 						str(idEmpenho)
 						))
-
 						con.commit()
 						contadorPagamento = contadorPagamento + 1
 						print("Pagamento {}".format (contadorPagamento))
@@ -266,6 +258,23 @@ def verificaSeRetornaEmpenho():
 			r = requests.get(link)
 			reddit_data = json.loads(r.content)
 			if(reddit_data=="Erro: Contate o Administrador do Sistema!"):
+				listaClientesSemEmpenho.append(cliente)
+		except ConnectionError as err:
+			print(err)
+	return listaClientesSemEmpenho
+
+def retornaCidadesComEmpenho():
+	listaClientes = retornaClientes()
+	listaClientesSemEmpenho = []
+	for cliente in listaClientes:
+
+		idCliente = cliente.idcliente
+		print(idCliente)
+		link = "http://transparencia.portalfacil.com.br/api/empenhos?type=json&idCliente="+str(idCliente)+"&page=1&pageSize=100&dtInicio=01/01/2017&dtFim=31/12/2017"
+		try:
+			r = requests.get(link)
+			reddit_data = json.loads(r.content)
+			if(reddit_data!="Erro: Contate o Administrador do Sistema!"):
 				listaClientesSemEmpenho.append(cliente)
 		except ConnectionError as err:
 			print(err)
