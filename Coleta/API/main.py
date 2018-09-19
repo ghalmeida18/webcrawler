@@ -19,11 +19,11 @@ dataInicio = "01/01/2017"
 dataFim = "31/12/2017"
 empenho = Empenho.Empenho()
 
-
 listaClientes = Gerenciador.retornaCidadesComEmpenho()
 print(len(listaClientes))
+
 for cliente in listaClientes:
-    if(cliente.idcliente==279):
+    if(cliente.idcliente>=278):
         # Gerenciador.recuperaEmpenhoInsereBanco(cliente.idcliente,dataInicio,dataFim)
         Gerenciador.recuperaPagamentoInsereBanco(cliente.idcliente,dataInicio,dataFim)
         fim = time.time()

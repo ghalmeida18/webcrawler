@@ -266,16 +266,27 @@ def verificaSeRetornaEmpenho():
 def retornaCidadesComEmpenho():
 	listaClientes = retornaClientes()
 	listaClientesSemEmpenho = []
-	for cliente in listaClientes:
 
+	tamanhoLista = len(listaClientes)
+	listaClientes.reverse()
+
+	while(tamanhoLista > 0):
+
+		cliente = listaClientes[tamanhoLista-1]
 		idCliente = cliente.idcliente
 		print(idCliente)
 		link = "http://transparencia.portalfacil.com.br/api/empenhos?type=json&idCliente="+str(idCliente)+"&page=1&pageSize=100&dtInicio=01/01/2017&dtFim=31/12/2017"
+
 		try:
 			r = requests.get(link)
-			reddit_data = json.loads(r.content)
-			if(reddit_data!="Erro: Contate o Administrador do Sistema!"):
-				listaClientesSemEmpenho.append(cliente)
-		except ConnectionError as err:
-			print(err)
+			if r.status_code == 200:
+				reddit_data = json.loads(r.content)
+				if(reddit_data!="Erro: Contate o Administrador do Sistema!"):
+					listaClientesSemEmpenho.append(cliente)
+
+			tamanhoLista = tamanhoLista - 1
+		except:
+			print("ERRO CONEXAO")
+
+
 	return listaClientesSemEmpenho
