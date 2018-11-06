@@ -45,8 +45,6 @@ def recuperaClientesInsereBanco(link):
 
 def recuperaEmpenhoInsereBanco(idCliente,dataInicio,dataFim):
 
-
-
 	controlador = True
 
 	contadorEmpenhos = 0
@@ -290,3 +288,100 @@ def retornaCidadesComEmpenho():
 
 
 	return listaClientesSemEmpenho
+
+def recuperaDadosIGBE():
+
+	codIBGE = 314710
+	link = "https://servicodados.ibge.gov.br/api/v1/pesquisas/indicadores/29169|29170|29171|25207|29168|29765|29763|60036|60037|60045|60041|60042|5908|5913|5929|5934|5950|5955|47001|60048|30255|28141|29749|30279|60032|28242|29167|60030|60029|60031/resultados/"+str(codIBGE)
+	con = conectaBanco()
+	contador = 0
+
+	r = requests.get(link)
+	if r.status_code == 200:
+		reddit_data = json.loads(r.content)
+
+		while True:
+			try:
+				# print(reddit_data[contador]['id'])
+				# print(reddit_data[contador]['res'][0]['res'])
+
+				#insere informação de todos os anos
+				for reddit in reddit_data[contador]['res'][0]['res']:
+					# print(reddit +" "+reddit_data[0]['res'][0]['res'][reddit])
+					sql = "INSERT INTO HistoricoMetrica (idMetrica,codIBGE,ano,valor) values ("+ str(reddit_data[contador]['id']) +",'"+str(codIBGE)+"','"+str(reddit) +"','"+reddit_data[contador]['res'][0]['res'][reddit]+"')"
+					print(sql)
+					cursor = con.cursor()
+					cursor.execute(sql)
+					con.commit()
+				contador = contador + 1
+
+			except:
+				break
+	else:
+		print("= HTTP Error 503. The service is unavailable. =")
+
+	con.close()
+
+
+def retornaPesquisasIBGE():
+
+	link = "https://servicodados.ibge.gov.br/api/v1/pesquisas/indicadores/29169%7C29170%7C29171%7C25207%7C29168%7C29765%7C29763%7C60036%7C60037%7C60045%7C60041%7C60042%7C5908%7C5913%7C5929%7C5934%7C5950%7C5955%7C47001%7C60048%7C30255%7C28141%7C29749%7C30279%7C60032%7C28242%7C29167%7C60030%7C60029%7C60031?localidade=&lang=pt"
+	con = conectaBanco()
+
+	r = requests.get(link)
+	if r.status_code == 200:
+		reddit_data = json.loads(r.content)
+
+		for reddit in reddit_data:
+			print(reddit['indicador']+" "+str(reddit['id']))
+
+			sql = "INSERT INTO Metrica(descricao,id) values ('"+reddit['indicador']+"',"+str(reddit['id'])+")"
+			cursor = con.cursor()
+			cursor.execute(sql)
+			con.commit()
+
+	else:
+		print("= HTTP Error 503. The service is unavailable. =")
+
+	con.close()
+
+def recuperaIdIBGECidades():
+
+	link = "https://servicodados.ibge.gov.br/api/v1/localidades/municipios"
+	con = conectaBanco()
+	idCidadeIBGE = ""
+	idCidade = ""
+	nomeCidade = ""
+
+	r = requests.get(link)
+	if r.status_code == 200:
+		reddit_data = json.loads(r.content)
+
+		cursor = con.cursor()
+		cursorUpdate = con.cursor()
+		# RETORNA O ID DO EMPENHO RELACIONADO AO PAGAMENTO
+		for reddit in reddit_data:
+			cidade = reddit['nome']
+			#realiza replace para caso a cidade tenha aspa simples
+			cidade = cidade.replace("'","\\'")
+			print("SELECT *from Cliente WHERE nome = 'Prefeitura Municipal de "+cidade+"'")
+			cursor.execute("SELECT *from Cliente WHERE nome = 'Prefeitura Municipal de "+cidade+"'")
+			retorno = cursor.fetchone()
+			if(retorno != None):
+				print(retorno['nome']);
+				print(retorno['idCliente']);
+				cursor.execute("UPDATE Cliente SET codIBGE = " +str(reddit['id']) +" WHERE idCliente = '"+str(retorno['idCliente'])+"'")
+				con.commit()
+			else:
+				print("SELECT *from Cliente WHERE nome = 'Prefeitura de "+cidade+"'")
+				cursor.execute("SELECT *from Cliente WHERE nome = 'Prefeitura de "+cidade+"'")
+				retorno = cursor.fetchone()
+				if(retorno != None):
+					print(retorno['nome']);
+					print(retorno['idCliente']);
+					cursor.execute("UPDATE Cliente SET codIBGE = " +str(reddit['id']) +" WHERE idCliente = '"+str(retorno['idCliente'])+"'")
+					con.commit()
+	else:
+		print("= HTTP Error 503. The service is unavailable. =")
+
+	con.close()
