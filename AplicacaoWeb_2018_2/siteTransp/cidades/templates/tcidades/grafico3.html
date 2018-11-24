@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+{% load static %}
+{% load widget_tweaks %}
+
+<html lang="en">
+
+<head>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="">
+<meta name="author" content="">
+
+<title>Site da Transparência</title>
+
+<!-- Bootstrap core CSS -->
+<link href="{% static 'bootsTrapDetails/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+
+<!-- Custom fonts for this template -->
+<link href="{% static 'bootsTrapDetails/vendor/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
+
+<!-- Plugin CSS -->
+<link href="{% static 'bootsTrapDetails/vendor/magnific-popup/magnific-popup.css' %}" rel="stylesheet">
+
+<!-- Custom styles for this template -->
+<link href="{% static 'bootsTrapDetails/css/freelancer.min.css' %}" rel="stylesheet">
+
+<!-- link para chart.js-->
+<script src = "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+</head>
+
+<body id="page-top">
+
+<!-- Navigation -->
+<p></p>
+<nav class="navbar navbar-expand-lg bg-secondary fixed-top text-uppercase" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand js-scroll-trigger" href="{% url 'cidades:details' cidade.slug %}">Site Transparência</a>
+    <button class="navbar-toggler navbar-toggler-right text-uppercase bg-primary text-white rounded" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+      Menu
+      <i class="fa fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+
+        <li class="nav-item mx-0 mx-lg-1">
+         <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="{% url 'cidades:relatorio' cidade.slug %}"> Relatórios</a>
+        <!-- <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#relatorios"> Relatórios</a> -->
+        </li>       
+
+        <li class="nav-item mx-0 mx-lg-1">
+         <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="{% url 'cidades:grafico' cidade.slug %}"> Gráficos</a>
+        <!-- <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#relatorios"> Relatórios</a> -->
+        </li>
+
+        <li class="nav-item mx-0 mx-lg-1">
+         <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="{% url 'cidades:detalhado' cidade.slug %}"> Detalhamento</a>
+        <!-- <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#relatorios"> Relatórios</a> -->
+        </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- relatorios Section -->
+<section id="relatorios">
+
+<!--RELATORIO COM ANALISE SOBRE A SOMA DE GASTOS-->
+<div class="col-lg-8 mx-auto">
+  <h3>Gráficos de Análise Detalhado por Data</h3>
+  <p>Insira a data no formato <b> dia/mês/ano</b> para buscar pelos dados</p>
+
+      <div class="row">
+      <div class="col-lg-8 mx-auto">
+
+        {% if is_valid %}
+        <div class="alert alert-success">
+          Busca Realisada com Sucesso: {{dataInicial}} à {{dataFinal}}
+        </div>
+        {% endif %}
+        <form class="form-horizontal" action="" method="post">
+          {% csrf_token %}
+          <fieldset>
+            {% for field in form %}
+            <div class="form-group {% if field.errors %} has-error{% endif %}">
+              <label for="{{ field.auto_id }}" class="col-md-3 control-label">{{ field.label }}</label>
+              <div class="col-md-9">
+                {% render_field field class='form-control' %}
+                {% for error in field.errors %}
+                <span class="help-block">{{ error }}</span>
+                {% endfor %}
+              </div>
+            </div>
+            {% endfor %}
+            <div id="success"></div>
+            <div class="form-group fixed">
+              <button type="submit" class="btn btn-info " id="sendMessageButton">Buscar</button>
+            </div>
+          </fieldset>
+        </form>
+
+      </div>
+    </div>
+
+  <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo2">Gráficos</button>
+  <div id="demo2" class="collapse in">
+
+    <!--POR ORGAO-->
+    <div class="panel-group" id="accordion">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" data-parent="#accordion20" href="#collapse21">
+            Gastos por Orgão</a>
+          </h4>
+        </div>
+        <div id="collapse21" class="panel-collapse collapse in">
+          <div class="panel-body">
+                <canvas id="productsChart2" width="350" height="350"></canvas>
+
+      </div>
+    </div>
+        <!--POR ELEMENTO-->
+    <div class="panel-group" id="accordion">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" data-parent="#accordion20" href="#collapse22">
+            Gastos por Elemento</a>
+          </h4>
+        </div>
+        <div id="collapse22" class="panel-collapse collapse in">
+          <div class="panel-body">
+                    <canvas id="productsChart3" width="350" height="350"></canvas>
+
+      </div>
+    </div>
+
+            <!--POR SUBFUNCAO-->
+    <div class="panel-group" id="accordion">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" data-parent="#accordion20" href="#collapse23">
+            Gastos por SubFuncao</a>
+          </h4>
+        </div>
+        <div id="collapse23" class="panel-collapse collapse in">
+          <div class="panel-body">
+                      <canvas id="productsChart5" width="350" height="350"></canvas>
+
+      </div>
+    </div>
+
+            <!--POR FUNCAO-->
+    <div class="panel-group" id="accordion">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" data-parent="#accordion20" href="#collapse24">
+            Gastos por Funcao</a>
+          </h4>
+        </div>
+        <div id="collapse24" class="panel-collapse collapse in">
+          <div class="panel-body">
+                        <canvas id="productsChart4" width="350" height="350"></canvas>
+
+      </div>
+    </div>
+
+                <!--POR PROJETO-->
+    <div class="panel-group" id="accordion">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" data-parent="#accordion20" href="#collapse25">
+            Gastos por Projeto</a>
+          </h4>
+        </div>
+        <div id="collapse25" class="panel-collapse collapse in">
+          <div class="panel-body">
+                        <canvas id="productsChart6" width="350" height="350"></canvas>
+
+      </div>
+    </div>
+    
+                <!--POR DIARIAS-->
+    <div class="panel-group" id="accordion">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" data-parent="#accordion20" href="#collapse26">
+            Gastos por Diarias</a>
+          </h4>
+        </div>
+        <div id="collapse26" class="panel-collapse collapse in">
+          <div class="panel-body">
+                            <canvas id="productsChart7" width="350" height="350"></canvas>
+
+      </div>
+    </div>
+    
+  <!--=====================================-->
+
+  </div>
+</div>
+</div>
+</div>
+
+</div>
+</section>
+
+
+  
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="{% static 'bootsTrapDetails/vendor/jquery/jquery.min.js' %}"></script>
+  <script src="{% static 'bootsTrapDetails/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+  <!--DataTables JS-->
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.18/datatables.min.css"/>
+  <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.18/datatables.min.js"></script>
+
+  <!-- Plugin JavaScript 
+  <script src=" {% static 'bootsTrapDetails/vendor/jquery-easing/jquery.easing.min.js' %}"></script> -->
+  
+  <script src="{% static 'bootsTrapDetails/vendor/magnific-popup/jquery.magnific-popup.min.js' %}"></script>
+   
+  <!-- Custom scripts for this template -->
+  <script src="{% static 'bootsTrapDetails/js/freelancer.min.js' %}"></script> -->
+    <script>
+      function grafico2(titulo,valor,chartID){
+        var ctx = document.getElementById(chartID);
+        var names = JSON.parse(titulo);
+        var prices = JSON.parse(valor);
+
+        color=[]
+        for (i=0;i<names.length;i++){
+
+          if (i%2 == 0){
+            color.push("#4B0082")
+          }
+          else{
+            color.push("#00FF00 ")
+          }
+        }
+        var productsChart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: names,
+            datasets: [{
+              label: 'Gastos R$',
+              data: prices,
+              backgroundColor: color,
+              borderColor: [
+              'rgba(255,99,132,1)',
+              'rgba(54, 162, 235, 1)',
+              'rgba(255, 206, 86, 1)',
+              'rgba(75, 192, 192, 1)',
+              'rgba(153, 102, 255, 1)',
+              'rgba(255, 159, 64, 1)'
+              ],
+              borderWidth: 1
+            }]
+          },
+          options: {
+            scales: {
+              yAxes: [{
+                ticks: {
+                  beginAtZero:true
+                }
+              }]
+            }
+          }
+        });
+      }
+    </script>
+    <script>
+
+      grafico2('{{ nomeOrgao | safe }}','{{valorOrgao | safe }}',"productsChart2");
+      grafico2('{{ nomeElemento | safe }}','{{valorElemento | safe }}',"productsChart3");
+      grafico2('{{ nomeFuncao | safe }}','{{valorFuncao | safe }}',"productsChart4");
+      grafico2('{{ nomeSubFuncao | safe }}','{{valorSubFuncao | safe }}',"productsChart5");
+      grafico2('{{ nomeProjeto | safe }}','{{valorProjeto | safe }}',"productsChart6");
+      grafico2('{{ nomeDiarias | safe }}','{{valorDiarias | safe }}',"productsChart7");
+
+    </script>
+</body>
+
+</html>
+

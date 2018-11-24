@@ -1,0 +1,36 @@
+<!--Auth Jose Diego Alves Duarte-->
+<!doctype html>
+{% load static %}
+<html lang="en">
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.bundle.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Plataforma de Transparência Pública" />
+    <title>Site pela Tranparência</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}"/>
+</head>
+<body>
+    <div class="header">
+        <!-- <div class="pure-menu pure-menu-open pure-menu-fixed pure-menu-horizontal"> -->
+        <div class="pure-menu pure-menu-open pure-menu-fixed pure-menu-horizontal">
+            <a class="pure-menu-heading" href="{% url 'core:home' %}">Site pela Tranparência</a>
+            <ul>
+                <li class="pure-menu-selected"><a href="{% url 'core:home' %}">Início</a></li>
+                <li><a href="{% url 'cidades:index' %}">Cidades</a></li>
+                <li><a href="{% url 'core:contact' %}">Contato</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="content">
+
+        {% block main %}  {% endblock %}
+
+        <div class="footer">
+            Site pela Tranparência - Uma simples plataforma de Tranparência Pública
+        </div>
+    </div>
+    <script src="http://yui.yahooapis.com/3.12.0/build/yui/yui-min.js"></script>
+</body>
+</html>

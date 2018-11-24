@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+{% load static %}
+{% load widget_tweaks %}
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Django E-Commerce</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <link rel="stylesheet" href="{% static 'bootsTrapRelGraf/bootstrap.min.css' %}" media="screen" />
+  <link rel="stylesheet" href="{% static 'bootsTrapRelGraf/custom.min.css' %}" media="screen" />
+  <script src = "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+
+</head>
+<body>
+  <div class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <a href="../" class="navbar-brand">Gráficos</a>
+        <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <div class="navbar-collapse collapse" id="navbar-main">
+        <ul class="nav navbar-nav">
+          <li>
+            <a href="#">{{id}}</a>
+          </li>
+          <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="download">Outras Informações <span class="caret"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="download">
+              <li><a href="">Diversos</a></li>
+              <li><a href="">Outras</a></li>
+              <li><a href="">Outras</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+          <div class="row">
+      <div class="col-lg-8 mx-auto">
+
+        {% if is_valid %}
+        <div class="alert alert-success">
+          Busca Realisada com Sucesso: {{dataInicial}} à {{dataFinal}}
+        </div>
+        {% endif %}
+        <form class="form-horizontal" action="" method="post">
+          {% csrf_token %}
+          <fieldset>
+            {% for field in form %}
+            <div class="form-group {% if field.errors %} has-error{% endif %}">
+              <label for="{{ field.auto_id }}" class="col-md-3 control-label">{{ field.label }}</label>
+              <div class="col-md-9">
+                {% render_field field class='form-control' %}
+                {% for error in field.errors %}
+                <span class="help-block">{{ error }}</span>
+                {% endfor %}
+              </div>
+            </div>
+            {% endfor %}
+            <div id="success"></div>
+            <div class="form-group fixed">
+              <button type="submit" class="btn btn-info " id="sendMessageButton">Buscar</button>
+            </div>
+          </fieldset>
+        </form>
+
+      </div>
+    </div>
+    <div class="row">
+      <h3>Gráficos Detalhado</h3>
+      <p>Clique no botão abaixo para visualizar as opções de Gráficos</p>
+      <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo1">Gráficos</button>
+      <p></p>
+      <div id="demo1" class="collapse in">
+        <div class="col-lg-12">
+          <div class="panel-group" id="accordion">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h4 class="panel-title">
+                  <a class="pinel-title" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                  Gastos por Orgão</a>
+                </h4>
+              </div>
+              <div class="collapse" id="collapseExample">
+                <div class="card card-body">
+                  <div id="collapse21" class="panel-collapse collapse in">
+                    <div class="panel-body">
+
+                      <canvas id="productsChart2" width="350" height="350"></canvas>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h4 class="panel-title">
+                  <a class="pinel-title" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                  Gastos por Orgão</a>
+                </h4>
+              </div>
+              <div class="collapse" id="collapseExample">
+                <div class="card card-body">
+                  <div id="collapse21" class="panel-collapse collapse in">
+                    <div class="panel-body">
+
+                      <canvas id="productsChart2" width="350" height="350"></canvas>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+  <script src="{% static 'bootsTrapRelGraf/bootstrap.min.js' %} "></script>
+
+  <script>
+  function grafico(titulo,valor,chartID){
+    var ctx = document.getElementById(chartID);
+    var names = JSON.parse(titulo);
+    var prices = JSON.parse(valor);
+    var productsChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: names,
+        datasets: [{
+          label: 'Gastos R$',
+          data: prices,
+          backgroundColor: [
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)'
+          ],
+          borderColor: [
+          'rgba(255,99,132,1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)'
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero:true
+            }
+          }]
+        }
+      }
+    });
+  }
+  </script>
+  <script>
+  function grafico2(titulo,valor,chartID){
+    var ctx = document.getElementById(chartID);
+    var names = JSON.parse(titulo);
+    var prices = JSON.parse(valor);
+
+    color=[]
+    for (i=0;i<names.length;i++){
+
+      if (i%2 == 0){
+        color.push("#4B0082")
+      }
+      else{
+        color.push("#00FF00 ")
+      }
+    }
+    var productsChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: names,
+        datasets: [{
+          label: 'Gastos R$',
+          data: prices,
+          backgroundColor: color,
+          borderColor: [
+          'rgba(255,99,132,1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)'
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero:true
+            }
+          }]
+        }
+      }
+    });
+  }
+  </script>
+
+  <script>
+  grafico2('{{ names | safe }}','{{prices | safe }}',"productsChart2");
+
+  </script>
+
+</body>
+</html>

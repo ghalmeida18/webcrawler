@@ -1,0 +1,6 @@
+1 - python3 -m pip install PyMySQL # https://github.com/PyMySQL/PyMySQL
+2 -  pip install requests
+
+
+
+

@@ -1,0 +1,129 @@
+{% load static %}
+{% load widget_tweaks %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Django E-Commerce</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <link rel="stylesheet" href="{% static 'bootsTrapRelGraf/bootstrap.min.css' %}" media="screen" />
+  <link rel="stylesheet" href="{% static 'bootsTrapRelGraf/custom.min.css' %}" media="screen" />
+</head>
+<body>
+  <div class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <a href="../" class="navbar-brand">Relatórios</a>
+        <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <div class="navbar-collapse collapse" id="navbar-main">
+        <ul class="nav navbar-nav">
+          <li>
+            <a href="#">{{id}}</a>
+          </li>
+          <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="download">Outras Informações <span class="caret"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="download">
+              <li><a href="">Diversos</a></li>
+              <li><a href="">Outras</a></li>
+              <li><a href="">Outras</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+<p></p>
+  <div class="container fixed">
+    <div class="row">
+      <div class="col-lg-8">
+        {% if is_valid %}
+        <div class=>
+          Busca Realisada com Sucesso: {{dataInicial}} à {{dataFinal}}
+        </div>
+        {% endif %}
+        <form class="form-horizontal" action="" method="post">
+          {% csrf_token %}
+          <fieldset>
+            {% for field in form %}
+            <div class="form-group {% if field.errors %} has-error{% endif %}">
+              <label for="{{ field.auto_id }}" class="col-md-3 control-label">{{ field.label }}</label>
+              <div class="col-md-9">
+                {% render_field field class='form-control' %}
+                {% for error in field.errors %}
+                <span class="help-block">{{ error }}</span>
+                {% endfor %}
+              </div>
+            </div>
+            {% endfor %}
+            <div id="success"></div>
+            <div class="form-group fixed">
+              <button type="submit" class="btn btn-info " id="sendMessageButton">Buscar</button>
+            </div>
+          </fieldset>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="row">
+
+      <h3>Relatórios Detalhado</h3>
+      <p>Clique no botão abaixo para visualizar as opções de relatórios</p>
+      <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo1">Relatórios</button>
+      <p></p>
+      <div id="demo1" class="collapse in">
+        <div class="col-lg-12">
+          <div class="panel-group" id="accordion">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h4 class="panel-title">
+                  <a class="pinel-title" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                  Gastos por Orgão</a>
+                </h4>
+              </div>
+              <div class="collapse" id="collapseExample">
+                <div class="card card-body">
+                  <div id="collapse21" class="panel-collapse collapse in">
+                    <div class="panel-body">
+                      <table class="table table-hover table-dark table-bordered">
+                        <thead class="thead-dark">
+                          <tr>
+                            <th>Setor</th>
+                            <th>Soma</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            {% for valor in listaSomaOrgao %}
+                            <td>
+                            {{valor.divisao}}{% if not forloop.last %}</br>{% endif %}
+                          </td>
+                          <td>
+                          R$ {{valor.soma}}{% if not forloop.last %}</br>{% endif %}
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+  <script src="{% static 'bootsTrapRelGraf/bootstrap.min.js' %} "></script>
+</body>
+</html>

@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+{% load static %}
+{% load widget_tweaks %}
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>SB Admin - Tables</title>
+    <!-- Bootstrap core CSS-->
+    <link href="{% static 'bootstrap_Dashboard/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <!-- Custom fonts for this template-->
+    <link href="{% static 'bootstrap_Dashboard/vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
+    <!-- Page level plugin CSS-->
+    <link href="{% static 'bootstrap_Dashboard/vendor/datatables/dataTables.bootstrap4.css' %}" rel="stylesheet">
+    <!-- Custom styles for this template-->
+    <link href="{% static 'bootstrap_Dashboard/css/sb-admin.css' %}" rel="stylesheet">
+    <!-- js for date -->
+    <link rel="stylesheet" href="http://cdn.datatables.net/plug-ins/1.10.19/sorting/currency.js" />
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.9.0/themes/base/jquery-ui.css" />
+    <script src="http://code.jquery.com/jquery-1.8.2.js"></script>
+    <script src="http://code.jquery.com/ui/1.9.0/jquery-ui.js"></script>
+    <script src=" {% static 'jsCore/jsDate.js' %}"></script> <!--codigo para datepck -->
+  </head>
+
+  <body id="page-top">
+    <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
+      <a class="navbar-brand mr-1" href="{% url 'cidades:details' cidade.slug %}">{{ cidade.nameCidade }}</a>
+      <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarToggle" href="#">
+      <i class="fas fa-bars"></i>
+      </button>
+      <!-- Navbar Search
+      <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
+        <div class="input-group">
+          <input type="text" class="form-control" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
+          <div class="input-group-append">
+            <button class="btn btn-primary" type="button">
+            <i class="fas fa-search"></i>
+            </button>
+          </div>
+        </div>
+      </form>
+      <!-- Navbar -->
+    </nav>
+    <div id="wrapper">
+      <!-- Sidebar -->
+    <ul class="sidebar navbar-nav">
+      
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="{% url 'cidades:detalhado' cidade.slug %}" id="pagesDropdown1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <i class="fas fa-fw fa-tachometer-alt"></i>
+          <span>DashBoard</span>
+        </a>
+        <div class="dropdown-menu" aria-labelledby="pagesDropdown1">
+          <a class="dropdown-item" href="{% url 'cidades:detalhado' cidade.slug %}"><b>DashBoard</b></a>
+          <h6 class="dropdown-header">Lista Gráficos</h6>
+          <a class="dropdown-item" href="#productsChart1">Saúde / Educação</a>
+          <a class="dropdown-item" href="#productsChart3">Admin. / Gest. Amb.</a>
+          <a class="dropdown-item" href="#productsChart5">Cultura / Ass. Social</a>
+          <a class="dropdown-item" href="#productsChart7">Sanem. / Agricul.</a>
+          <a class="dropdown-item" href="#productsChart9">Transp. / Urban.</a>
+        </div>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="{% url 'cidades:relatorio' cidade.slug %}" id="pagesDropdown3" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <i class="fas fa-fw fa-table"></i>
+          <span>Relatórios</span>
+        </a>
+        <div class="dropdown-menu" aria-labelledby="pagesDropdown3">
+          <a class="dropdown-item" href="{% url 'cidades:relatorio' cidade.slug %}"><b>Relatórios</b></a>
+          <h6 class="dropdown-header">Lista de Tabelas</h6>
+          <a class="dropdown-item" href="#id_tabela_orgao">Orgão</a>
+          <a class="dropdown-item" href="#id_tabela_subfuncao">Sub-Função</a>
+          <a class="dropdown-item" href="#id_tabela_diarias">Diarias</a>
+          <a class="dropdown-item" href="#id_tabela_projeto">Projetos</a>
+          <a class="dropdown-item" href="#id_tabela_elemento">Elementos</a>
+        </div>
+      </li>
+      
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="{% url 'cidades:grafico' cidade.slug %}" id="pagesDropdown2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <i class="fas fa-fw fa-chart-area"></i>
+          <span>Gráficos</span>
+        </a>
+        <div class="dropdown-menu" aria-labelledby="pagesDropdown2">
+          <a class="dropdown-item" href="{% url 'cidades:grafico' cidade.slug %}"><b>Gráficos</b></a>
+          <h6 class="dropdown-header">Comparativos/cidades</h6>
+            <a class="dropdown-item" href="#id_orgao">Saude</a>
+            <a class="dropdown-item" href="#id_funcao">Educação</a>
+            <a class="dropdown-item" href="#id_subfuncao">Administração</a>
+          <h6 class="dropdown-header">Gráficos Diversos</h6>
+            <a class="dropdown-item" href="#orgao">Orgão</a>
+            <a class="dropdown-item" href="#funcao">Função</a>
+            <a class="dropdown-item" href="#subfuncao">Sub-Função</a>
+            <a class="dropdown-item" href="#Projeto">Projetos</a>
+            <a class="dropdown-item" href="#Diarias">Diarias</a>
+        </div>
+      </li>
+
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="{% url 'cidades:grafico' cidade.slug %}" id="pagesDropdown2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <i class="fas fa-fw fa-chart-area"></i>
+          <span>Anomalias</span>
+        </a>
+        <div class="dropdown-menu" aria-labelledby="pagesDropdown2">
+          <a class="dropdown-item" href="{% url 'cidades:anomalias' cidade.slug %}"><b>Anomalias</b></a>
+          <h6 class="dropdown-header">Lista de anomalias</h6>
+          <a class="dropdown-item" href="#id_mediaSaude">Saúde</a>
+          <a class="dropdown-item" href="#id_mediaEducacao">Educação</a>
+          <a class="dropdown-item" href="#id_mediaAdm">Administração</a>
+        </div>
+      </li>
+    </ul>
+      
+      <div id="content-wrapper">
+        <div class="container-fluid">
+          <!-- Breadcrumbs
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="#">Tabelas</a>
+            </li>
+            <li class="breadcrumb-item active">Tabelas</li>
+          </ol>-->
+          <div class="row">
+            <div class="col-lg-8 mx-auto">
+              <p>Insira a data no formato <b> Dia/Mês/Ano </b> para buscar pelos dados</p>
+              {% if is_valid %}
+                <div class="alert alert-success">
+                  Busca Realisada com Sucesso: {{dataInicial}} à {{dataFinal}}
+                </div>
+              {% endif %}
+              <form class="form-horizontal" action="" method="post">
+                {% csrf_token %}
+                <fieldset>
+                  {% for field in form %}
+                    <div class="form-group {% if field.errors %} has-error{% endif %}">
+                    <label for="{{ field.auto_id }}" class="col-md-3 control-label">{{ field.label }}</label>
+                    <div class="col-md-9">
+                      {% render_field field %}
+                      {% for error in field.errors %}
+                        <span class="help-block">{{ error }}</span>
+                      {% endfor %}
+                    </div>
+                  </div>
+                {% endfor %}
+                <div id="success"></div>
+                <div class="form-group fixed">
+                  <button type="submit" class="btn btn-info " id="sendMessageButton">Buscar</button>
+                </div>
+              </fieldset>
+            </form>
+          </div>
+        </div>
+        <!-- DataTables Example -->
+
+        <div class="card mb-3">
+          <div class="card-header">
+            <i class="fas fa-table"></i>
+          Elementos</div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table id="id_tabela_elemento" class="table table-hover table-bordered">
+                <thead class="thead-dark">
+                  <tr>
+                    <th>Elemento</th>
+                    <th>Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    {% for valor in listaElemento %}
+                      <td>
+                        {{valor.divisao}}{% if not forloop.last %}</br>{% endif %}
+                      </td>
+                      <td>
+                        R$ {{valor.soma}}{% if not forloop.last %}</br>{% endif %}
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card-footer small text-muted">{{ cidade.nameCidade }}</div>
+        </div>
+        
+        <div class="card mb-3">
+          <div class="card-header">
+            <i class="fas fa-table"></i>
+          Sub-Funções</div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table id="id_tabela_subfuncao" class="table table-hover table-bordered">
+                <thead class="thead-dark">
+                  <tr>
+                    <th>Sub-Função</th>
+                    <th>Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    {% for valor in listaSubFuncao %}
+                      <td>
+                        {{valor.divisao}}{% if not forloop.last %}</br>{% endif %}
+                      </td>
+                      <td>
+                        R$ {{valor.soma}}{% if not forloop.last %}</br>{% endif %}
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card-footer small text-muted">{{ cidade.nameCidade }}</div>
+        </div>
+
+        <div class="card mb-3">
+          <div class="card-header">
+            <i class="fas fa-table"></i>
+          Funções</div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table id="id_tabela_funcao" class="table table-hover table-bordered">
+                <thead class="thead-dark">
+                  <tr>
+                    <th>Função</th>
+                    <th>Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    {% for valor in listaFuncao %}
+                      <td id ="#linha">
+                        {{valor.divisao }}{% if not forloop.last %}</br>{% endif %}
+                      </td>
+                      <td>
+                        R$ {{valor.soma}}{% if not forloop.last %}</br>{% endif %}
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card-footer small text-muted">{{ cidade.nameCidade }}</div>
+        </div>
+
+        <div class="card mb-3" id="tabela1">
+          <div class="card-header">
+            <i class="fas fa-table"></i>
+          Orgãos</div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table id="id_tabela_orgao" class="table table-hover table-bordered">
+                <thead class="thead-dark">
+                  <tr>
+                    <th>Orgão</th>
+                    <th>Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    {% for valor in listaOrgao %}
+                      <td>
+                        {{valor.divisao}}{% if not forloop.last %}</br>{% endif %}
+                      </td>
+                      <td>
+                        <!-- R$ -->
+                        R$ {{valor.soma}}{% if not forloop.last %}</br>{% endif %}
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card-footer small text-muted">{{ cidade.nameCidade }}</div>
+        </div>
+        
+        <div class="card mb-3">
+          <div class="card-header">
+            <i class="fas fa-table"></i>
+          Projetos</div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table id="id_tabela_projeto" class="table table-hover table-bordered">
+                <thead class="thead-dark">
+                  <tr>
+                    <th>Projeto</th>
+                    <th>Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    {% for valor in listaProjeto %}
+                      <td>
+                        {{valor.divisao}}{% if not forloop.last %}</br>{% endif %}
+                      </td>
+                      <td>
+                        R$ {{valor.soma}}{% if not forloop.last %}</br>{% endif %}
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card-footer small text-muted">{{ cidade.nameCidade }}</div>
+        </div>
+
+        <div class="card mb-3">
+          <div class="card-header">
+            <i class="fas fa-table"></i>
+          Diarias</div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table id="id_tabela_diarias" class="table table-hover table-bordered">
+                <thead class="thead-dark">
+                  <tr>
+                    <th>Diaria</th>
+                    <th>Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    {% for valor in listaDiarias %}
+                      <td >
+                        {{valor.Nome}}{% if not forloop.last %}</br>{% endif %}
+                      </td>
+                      <td>
+                        R$ {{valor.soma}}{% if not forloop.last %}</br>{% endif %}
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card-footer small text-muted">{{ cidade.nameCidade }}</div>
+        </div>
+
+      </div>
+      <p class="small text-center text-muted my-5">
+        <em>Obrigado</em>
+      </p>
+    </div>
+  </div>
+  <!-- /.container-fluid -->
+  <!-- Sticky Footer -->
+  <footer class="sticky-footer">
+    <div class="container my-auto">
+      <div class="copyright text-center my-auto">
+        <span>Jose Diego © Site pela Transparência 2018</span>
+      </div>
+    </div>
+  </footer>
+</div>
+<!-- /.content-wrapper -->
+</div>
+<!-- /#wrapper -->
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" href="#page-top">
+<i class="fas fa-angle-up"></i>
+</a>
+<!-- Logout Modal-->
+<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog" role="document">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+      <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">×</span>
+      </button>
+    </div>
+    <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+      <a class="btn btn-primary" href="login.html">Logout</a>
+    </div>
+  </div>
+</div>
+</div>
+<!-- Bootstrap core JavaScript
+<script src="{% static 'bootstrap_Dashboard/vendor/jquery/jquery.min.js' %}"></script> -->
+<script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- Core plugin JavaScript-->
+<script src="{% static 'bootstrap_Dashboard/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+<!-- Page level plugin JavaS cript-->
+<script src="{% static 'bootstrap_Dashboard/vendor/chart.js/Chart.min.js' %}"></script>
+<script src="{% static 'bootstrap_Dashboard/vendor/datatables/jquery.dataTables.js' %}"></script>
+<script src="{% static 'bootstrap_Dashboard/vendor/datatables/dataTables.bootstrap4.js' %}"></script>
+<!-- Custom scripts for all pages-->
+<script src="{% static 'bootstrap_Dashboard/js/sb-admin.min.js' %}"></script>
+<!-- Demo scripts for this page-->
+<script src="{% static 'bootstrap_Dashboard/js/demo/datatables-demo.js' %}"></script>
+<script src="{% static 'bootstrap_Dashboard/js/demo/chart-area-demo.js' %}"></script>
+<!-- jsCoreT -->
+<script src=" {% static 'jsCore/jsCoreT.js' %}"></script>
+</body>
+</html>

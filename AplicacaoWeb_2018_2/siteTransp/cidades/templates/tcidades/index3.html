@@ -1,0 +1,78 @@
+<!--Auth Jose Diego Alves Duarte-->
+{% extends "base2.html"%}
+{% load static %}
+
+{% block main %}
+
+<div class="pure-g-r content-ribbon">
+    <div class="pure-u-1">
+        <div class="l-box">
+            <h4 class="content-subhead">Listagem das cidades aderidas ao projeto</h4>
+            <p>Abaixo a lista de cidades</p>
+        </div>
+    </div>
+</div>
+
+<div class="pure-g-r content-ribbon">
+    <form class="pure-form" action="{% url 'cidades:index' %}">
+        <fieldset>
+            <input name="q" type="text" placeholder="Cidade">
+            <button type="submit" class="pure-button pure-button-primary">Buscar</button>
+        </fieldset>
+    </form>
+</div>
+
+{% for cidade in cidades %}
+<div class="pure-g-r content-ribbon">
+    <div class="pure-u-1-3">
+        <div class="l-box">
+            <a href="{% url 'cidades:details' cidade.slug %}">
+                {% if cidade.image %}
+                    <img src="{{ cidade.image.url }}" alt="{{ cidade.nameCidade }}">
+                {% else %}
+                    <img src="{% static 'img/cidade.png' %}" alt="{{ cidade.nameCidade }}">
+                {% endif %}
+            </a>
+        </div>
+    </div>
+    <div class="pure-u-2-3">
+        <div class="l-box">
+            <h4 class="content-subhead"><a href="{% url 'cidades:details' cidade.slug %}" title="">{{ cidade.nameCidade }}</a></h4>
+            <p>
+                {{ cidade.description | linebreaks }}
+            </p>
+        </div>
+    </div>
+</div>
+{% empty %}
+<div class="pure-g-r content-ribbon">
+    <div class="pure-u-1">
+        <div class="l-box">
+            <h4 class="content-subhead">Nenhuma cidade cadastrada</h4>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+
+<div class="pagination">
+    <span class="step-links">
+
+        {% if page_obj.has_previous  %}
+            <a class="pure-button"href="?page=1">&laquo; 1</a>
+            <a class="pure-button"href="?page={{ page_obj.previous_page_number }}"><<</a>
+        {% endif %}
+
+        <span class="current">
+            Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+        </span>
+
+        {% if page_obj.has_next %}
+            <a class="pure-button" href="?page={{ page_obj.next_page_number }}">>></a>
+            <a class="pure-button" href="?page={{ page_obj.paginator.num_pages }}">Ultima &raquo;</a>
+        {% endif %}
+
+    </span>
+</div>  
+<p></p>
+{% endblock %}
