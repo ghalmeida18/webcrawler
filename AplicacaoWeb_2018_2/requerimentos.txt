@@ -1,10 +1,8 @@
 GERAL REQUIMENTS
 
-REQ. para site velho
-
-djan1 - install django==1.8
+1 - install django==1.8
 2 - pip install django-bootstrap3 # depedencias para bootstrap
-3 - sudo apt-get install python3.6-dev libmysqlclient-dev # dependencias para setup tools OBS 	    VERSION PYTHON
+3 - sudo apt-get install python3.6-dev libmysqlclient-dev # dependencias para setup tools OBS: VERSION PYTHON
 4 - pip install mysqlclient # dependencias python e msql
 5 - sudo apt-get install python3-dev libmysqlclient-dev # dependencias python e msql OBS: Terminal
     fora do venv
@@ -12,9 +10,7 @@ djan1 - install django==1.8
 7 - easy_install six # bbt six
 8 - python3 -m pip install PyMySQL # https://github.com/PyMySQL/PyMySQL
 
-
 REQ. site full versao
-
 pip install pillow
 pip3 install django-widget-tweaks 
 sudo apt-get install python-requests // para a API
